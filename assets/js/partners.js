@@ -1,5 +1,6 @@
 /**
  * PARTNERS.JS — TrackCast Verified Partners & Field Reports Logic
+ * Destination filter uses same custom bottom-sheet picker as reports.js
  */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -9,25 +10,62 @@ document.addEventListener("DOMContentLoaded", () => {
   const tabs = document.querySelectorAll(".tab-btn[data-tab]");
   const partnersSection = document.getElementById("partners-list-wrap");
   const reportsSection = document.getElementById("reports-feed-wrap");
-  const destinationFilter = document.getElementById("filter-dest-select");
-  
-  let currentTab = "semua"; // "semua" | "guide" | "porter" | "laporan"
+  const destHiddenInput = document.getElementById("filter-dest-select");
+
+  let currentTab = "semua";
   let selectedDest = "semua";
+
+  // Destination list (icons as unicode escapes to preserve encoding)
+  const destinationList = [
+    { id: "semua",        name: "Semua Destinasi",           region: "Seluruh Indonesia",       icon: "\uD83D\uDDFA\uFE0F", status: "aman",    statusLabel: "Semua"    },
+    { id: "rinjani",      name: "Gunung Rinjani",            region: "Lombok, NTB",             icon: "\uD83C\uDFD4\uFE0F", status: "waspada", statusLabel: "Waspada"  },
+    { id: "pantaipink",   name: "Pantai Pink",               region: "Lombok Timur, NTB",       icon: "\uD83C\uDFD6\uFE0F", status: "aman",    statusLabel: "Aman"     },
+    { id: "prambanan",    name: "Candi Prambanan",           region: "Sleman, DIY",             icon: "\uD83C\uDFDB\uFE0F", status: "aman",    statusLabel: "Aman"     },
+    { id: "semeru",       name: "Gunung Semeru",             region: "Lumajang, Jatim",         icon: "\uD83C\uDFD4\uFE0F", status: "bahaya",  statusLabel: "Bahaya"   },
+    { id: "madakaripura", name: "Air Terjun Madakaripura",   region: "Probolinggo, Jatim",      icon: "\uD83D\uDCA7",       status: "waspada", statusLabel: "Waspada"  },
+    { id: "bromo",        name: "Gunung Bromo",              region: "Probolinggo, Jatim",      icon: "\uD83C\uDF0B",       status: "waspada", statusLabel: "Waspada"  },
+    { id: "tumpaksewu",   name: "Air Terjun Tumpak Sewu",    region: "Lumajang, Jatim",         icon: "\uD83C\uDF0A",       status: "bahaya",  statusLabel: "Bahaya"   },
+    { id: "kuta",         name: "Pantai Kuta",               region: "Badung, Bali",            icon: "\uD83C\uDFD6\uFE0F", status: "aman",    statusLabel: "Aman"     },
+    { id: "nusadua",      name: "Pantai Nusa Dua",           region: "Badung, Bali",            icon: "\uD83C\uDFD6\uFE0F", status: "aman",    statusLabel: "Aman"     },
+    { id: "komodo",       name: "Taman Nasional Komodo",     region: "Manggarai Barat, NTT",    icon: "\uD83E\uDD8E",       status: "aman",    statusLabel: "Aman"     },
+    { id: "borobudur",    name: "Candi Borobudur",           region: "Magelang, Jateng",        icon: "\uD83C\uDFDB\uFE0F", status: "aman",    statusLabel: "Aman"     },
+    { id: "tobalake",     name: "Danau Toba",                region: "Sumatera Utara",          icon: "\uD83C\uDFDE\uFE0F", status: "aman",    statusLabel: "Aman"     },
+    { id: "rajaampat",    name: "Kepulauan Raja Ampat",      region: "Papua Barat Daya",        icon: "\uD83C\uDFDD\uFE0F", status: "aman",    statusLabel: "Aman"     }
+  ];
 
   // Check URL params for destination filter
   const urlParams = new URLSearchParams(window.location.search);
   const destParam = urlParams.get("dest");
-  if (destParam && destinationFilter) {
+  if (destParam && destinationList.some(d => d.id === destParam)) {
     selectedDest = destParam;
-    destinationFilter.value = destParam;
+    if (destHiddenInput) destHiddenInput.value = destParam;
+    updateDestCard(destParam);
   }
 
-  // 1. Render Partners
+  // Update the visible destination card to reflect selected destination
+  function updateDestCard(destId) {
+    const item = destinationList.find(d => d.id === destId) || destinationList[0];
+    const iconEl   = document.getElementById("partners-dest-icon");
+    const nameEl   = document.getElementById("partners-dest-name");
+    const regionEl = document.getElementById("partners-dest-region");
+    const pillEl   = document.getElementById("partners-dest-pill");
+    const statusEl = document.getElementById("partners-dest-status");
+
+    if (iconEl)   iconEl.textContent   = item.icon;
+    if (nameEl)   nameEl.textContent   = item.name;
+    if (regionEl) regionEl.textContent = item.region;
+    if (pillEl) {
+      pillEl.className = "dest-status-pill " + item.status;
+      if (statusEl) statusEl.textContent = item.statusLabel;
+    }
+  }
+
+  // ── 1. Render Partners ─────────────────────────────────────────
   function renderPartners() {
     const listEl = document.getElementById("partners-container");
     if (!listEl) return;
 
-    let filtered = data.partners;
+    let filtered = data.partners || [];
 
     if (currentTab === "guide") {
       filtered = filtered.filter(p => p.type === "guide");
@@ -40,120 +78,116 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (filtered.length === 0) {
-      listEl.innerHTML = `
-        <div style="text-align: center; padding: 32px 16px; color: var(--text-dim);">
-          <div style="font-size: 32px; margin-bottom: 8px;">🔍</div>
-          <p>Belum ada mitra terdaftar untuk filter ini.</p>
-        </div>
-      `;
+      listEl.innerHTML = [
+        '<div style="text-align:center;padding:32px 16px;color:var(--text-dim);">',
+        '  <div style="font-size:32px;margin-bottom:8px;">\uD83D\uDD0D</div>',
+        '  <p>Belum ada mitra terdaftar untuk filter ini.</p>',
+        '</div>'
+      ].join("");
       return;
     }
 
-    listEl.innerHTML = filtered.map(p => `
-      <div class="partner-card">
-        <div class="partner-header">
-          <div class="partner-avatar" style="background: ${p.avatarBg};">
-            ${p.name.split(" ").map(n => n[0]).slice(0, 2).join("")}
-          </div>
-          <div class="partner-info">
-            <div class="partner-name-row">
-              <span class="partner-name">${p.name}</span>
-              <span class="badge ${p.available ? 'badge--safe' : 'badge--warn'}" style="font-size: 9.5px;">
-                ${p.available ? 'Tersedia' : 'Bertugas'}
-              </span>
-            </div>
-            <div class="partner-role-tag">${p.typeLabel} · ${p.badge}</div>
-            <div class="partner-rating-row">
-              <span class="partner-stars">⭐ ${p.rating}</span>
-              <span>(${p.reviewCount} ulasan)</span>
-              <span>· ${p.experience}</span>
-            </div>
-          </div>
-        </div>
-
-        <p class="partner-bio">${p.bio}</p>
-
-        <div class="partner-meta-grid">
-          <div class="partner-meta-item">
-            <span class="meta-lbl">Lokasi Layanan</span>
-            <span class="meta-val">${p.location}</span>
-          </div>
-          <div class="partner-meta-item">
-            <span class="meta-lbl">Bahasa</span>
-            <span class="meta-val">${p.languages.join(", ")}</span>
-          </div>
-          <div class="partner-meta-item" style="grid-column: span 2;">
-            <span class="meta-lbl">Sertifikasi & Lisensi</span>
-            <span class="meta-val">${p.certifications.join(" · ")}</span>
-          </div>
-        </div>
-
-        <div class="partner-footer-row">
-          <div>
-            <div style="font-size: 10px; color: var(--text-muted);">TARIF RESMI STANDAR</div>
-            <div class="partner-rate-tag">${p.rate}</div>
-          </div>
-          <button type="button" class="btn-contact-wa" onclick="openContactModal('${p.name}', '${p.phone}', '${p.typeLabel}')">
-            <span>💬</span> WhatsApp
-          </button>
-        </div>
-      </div>
-    `).join("");
+    listEl.innerHTML = filtered.map(function(p) {
+      var initials = p.name.split(" ").map(function(n) { return n[0]; }).slice(0, 2).join("");
+      var availBadge = p.available
+        ? '<span class="badge badge--safe" style="font-size:9.5px;">Tersedia</span>'
+        : '<span class="badge badge--warn" style="font-size:9.5px;">Bertugas</span>';
+      return [
+        '<div class="partner-card">',
+        '  <div class="partner-header">',
+        '    <div class="partner-avatar" style="background:' + p.avatarBg + ';">' + initials + '</div>',
+        '    <div class="partner-info">',
+        '      <div class="partner-name-row">',
+        '        <span class="partner-name">' + p.name + '</span>',
+        '        ' + availBadge,
+        '      </div>',
+        '      <div class="partner-role-tag">' + p.typeLabel + ' \u00B7 ' + p.badge + '</div>',
+        '      <div class="partner-rating-row">',
+        '        <span class="partner-stars">\u2B50 ' + p.rating + '</span>',
+        '        <span>(' + p.reviewCount + ' ulasan)</span>',
+        '        <span>\u00B7 ' + p.experience + '</span>',
+        '      </div>',
+        '    </div>',
+        '  </div>',
+        '  <p class="partner-bio">' + p.bio + '</p>',
+        '  <div class="partner-meta-grid">',
+        '    <div class="partner-meta-item">',
+        '      <span class="meta-lbl">Lokasi Layanan</span>',
+        '      <span class="meta-val">' + p.location + '</span>',
+        '    </div>',
+        '    <div class="partner-meta-item">',
+        '      <span class="meta-lbl">Bahasa</span>',
+        '      <span class="meta-val">' + p.languages.join(", ") + '</span>',
+        '    </div>',
+        '    <div class="partner-meta-item" style="grid-column:span 2;">',
+        '      <span class="meta-lbl">Sertifikasi &amp; Lisensi</span>',
+        '      <span class="meta-val">' + p.certifications.join(" \u00B7 ") + '</span>',
+        '    </div>',
+        '  </div>',
+        '  <div class="partner-footer-row">',
+        '    <div>',
+        '      <div style="font-size:10px;color:var(--text-muted);">TARIF RESMI STANDAR</div>',
+        '      <div class="partner-rate-tag">' + p.rate + '</div>',
+        '    </div>',
+        '    <button type="button" class="btn-contact-wa" onclick="openContactModal(\'' + p.name + '\',\'' + p.phone + '\',\'' + p.typeLabel + '\')">',
+        '      <span>\uD83D\uDCAC</span> WhatsApp',
+        '    </button>',
+        '  </div>',
+        '</div>'
+      ].join("\n");
+    }).join("\n");
   }
 
-  // 2. Render Field Reports Feed
+  // ── 2. Render Field Reports Feed ───────────────────────────────
   function renderFieldReports() {
     const feedEl = document.getElementById("reports-container");
     if (!feedEl) return;
 
-    let filtered = data.fieldReports;
+    var filtered = data.fieldReports || [];
     if (selectedDest !== "semua") {
-      filtered = filtered.filter(r => r.destinationId === selectedDest);
+      filtered = filtered.filter(function(r) { return r.destinationId === selectedDest; });
     }
 
-    feedEl.innerHTML = filtered.map(r => {
-      const urgencyBadge = r.urgency === "danger" 
-        ? `<span class="badge badge--danger">${r.urgencyLabel}</span>`
-        : (r.urgency === "warn" ? `<span class="badge badge--warn">${r.urgencyLabel}</span>` : `<span class="badge badge--safe">${r.urgencyLabel}</span>`);
+    feedEl.innerHTML = filtered.map(function(r) {
+      var urgencyBadge = r.urgency === "danger"
+        ? '<span class="badge badge--danger">' + r.urgencyLabel + '</span>'
+        : (r.urgency === "warn"
+            ? '<span class="badge badge--warn">' + r.urgencyLabel + '</span>'
+            : '<span class="badge badge--safe">' + r.urgencyLabel + '</span>');
+      var avatarIcon = r.verifiedReport ? "\uD83D\uDEE1\uFE0F" : "\uD83D\uDC64";
+      var imageHtml = r.hasImage
+        ? '<div class="report-image-mock"><span>\uD83D\uDCF7 ' + r.imagePlaceholder + '</span></div>'
+        : "";
 
-      return `
-        <div class="report-feed-card">
-          <div class="report-feed-header">
-            <div class="report-author-box">
-              <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--card-3); display: flex; align-items: center; justify-content: center; font-size: 14px;">
-                ${r.verifiedReport ? '🛡️' : '👤'}
-              </div>
-              <div>
-                <div class="report-author-name">${r.authorName}</div>
-                <div class="report-author-role">${r.authorRole} · ${r.destinationName}</div>
-              </div>
-            </div>
-            ${urgencyBadge}
-          </div>
-
-          <h3 class="report-title">${r.title}</h3>
-          <p class="report-text">${r.content}</p>
-
-          ${r.hasImage ? `
-            <div class="report-image-mock">
-              <span>📷 ${r.imagePlaceholder}</span>
-            </div>
-          ` : ''}
-
-          <div class="report-footer">
-            <span>🕒 ${r.time}</span>
-            <button type="button" class="like-btn" onclick="toggleLike(this, ${r.likes})">
-              <span>👍 Terbantu</span> <span class="like-count">${r.likes}</span>
-            </button>
-          </div>
-        </div>
-      `;
-    }).join("");
+      return [
+        '<div class="report-feed-card">',
+        '  <div class="report-feed-header">',
+        '    <div class="report-author-box">',
+        '      <div style="width:32px;height:32px;border-radius:50%;background:var(--card-3);display:flex;align-items:center;justify-content:center;font-size:14px;">' + avatarIcon + '</div>',
+        '      <div>',
+        '        <div class="report-author-name">' + r.authorName + '</div>',
+        '        <div class="report-author-role">' + r.authorRole + ' \u00B7 ' + r.destinationName + '</div>',
+        '      </div>',
+        '    </div>',
+        '    ' + urgencyBadge,
+        '  </div>',
+        '  <h3 class="report-title">' + r.title + '</h3>',
+        '  <p class="report-text">' + r.content + '</p>',
+        '  ' + imageHtml,
+        '  <div class="report-footer">',
+        '    <span>\uD83D\uDD52 ' + r.time + '</span>',
+        '    <button type="button" class="like-btn" onclick="toggleLike(this,' + r.likes + ')">',
+        '      <span>\uD83D\uDC4D Terbantu</span> <span class="like-count">' + r.likes + '</span>',
+        '    </button>',
+        '  </div>',
+        '</div>'
+      ].join("\n");
+    }).join("\n");
   }
 
   // Like Toggle
   window.toggleLike = function(btn, initialLikes) {
-    const countEl = btn.querySelector(".like-count");
+    var countEl = btn.querySelector(".like-count");
     if (btn.classList.contains("liked")) {
       btn.classList.remove("liked");
       countEl.textContent = initialLikes;
@@ -163,118 +197,236 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // WhatsApp Contact Modal
-  const waModal = document.getElementById("contact-modal");
-  const modalOverlay = document.getElementById("modal-overlay-partners");
+  // ── MODAL MANAGEMENT ──────────────────────────────────────────
+  var modalOverlay = document.getElementById("modal-overlay-partners");
+  var destModal    = document.getElementById("partners-dest-modal");
+  var waModal      = document.getElementById("contact-modal");
+  var destTrigger  = document.getElementById("partners-dest-trigger");
 
+  function closeAllModals() {
+    document.querySelectorAll(".modal-sheet").forEach(function(sheet) {
+      sheet.style.display = "none";
+      sheet.style.height  = "";
+      sheet.classList.remove("sheet--expanded");
+    });
+    if (modalOverlay) modalOverlay.style.display = "none";
+  }
+
+  // ── Destination Picker Bottom Sheet ───────────────────────────
+  function renderDestPicker() {
+    var listEl = document.getElementById("partners-dest-list");
+    if (!listEl) return;
+
+    listEl.innerHTML = destinationList.map(function(item) {
+      var activeClass = item.id === selectedDest ? " active" : "";
+      return [
+        '<div class="dest-select-item' + activeClass + '" data-dest-id="' + item.id + '" role="button" tabindex="0">',
+        '  <div class="dest-item-left">',
+        '    <span class="dest-item-icon">' + item.icon + '</span>',
+        '    <div class="dest-item-text">',
+        '      <div class="dest-item-name">' + item.name + '</div>',
+        '      <div class="dest-item-region">' + item.region + '</div>',
+        '    </div>',
+        '  </div>',
+        '  <div class="dest-item-right">',
+        '    <span class="dest-status-pill ' + item.status + '">',
+        '      <span class="pill-dot">\u25CF</span> <span>' + item.statusLabel + '</span>',
+        '    </span>',
+        '  </div>',
+        '</div>'
+      ].join("\n");
+    }).join("\n");
+
+    listEl.querySelectorAll(".dest-select-item").forEach(function(itemEl) {
+      itemEl.addEventListener("click", function() {
+        var newDest = itemEl.getAttribute("data-dest-id");
+        if (!newDest) return;
+        selectedDest = newDest;
+        if (destHiddenInput) destHiddenInput.value = newDest;
+        updateDestCard(newDest);
+        closeAllModals();
+        renderPartners();
+        renderFieldReports();
+
+        try {
+          var url = new URL(window.location.href);
+          if (newDest === "semua") url.searchParams.delete("dest");
+          else url.searchParams.set("dest", newDest);
+          window.history.replaceState({}, "", url.toString());
+        } catch (e) {}
+      });
+
+      itemEl.addEventListener("keydown", function(e) {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); itemEl.click(); }
+      });
+    });
+  }
+
+  // Open dest picker on card click
+  if (destTrigger) {
+    destTrigger.addEventListener("click", function() {
+      renderDestPicker();
+      if (destModal && modalOverlay) {
+        destModal.style.display = "block";
+        modalOverlay.style.display = "block";
+        setTimeout(function() {
+          var active = destModal.querySelector(".dest-select-item.active");
+          if (active) active.scrollIntoView({ block: "nearest", behavior: "smooth" });
+        }, 40);
+      }
+    });
+
+    destTrigger.addEventListener("keydown", function(e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); destTrigger.click(); }
+    });
+  }
+
+  // ── Sheet Handle Drag & Expand (matching map.js) ───────────────
+  function setupSheetDragHandles() {
+    document.querySelectorAll(".modal-sheet").forEach(function(sheet) {
+      var handle = sheet.querySelector(".sheet-handle");
+      if (!handle) return;
+
+      var phStartY = 0, phStartH = 0, phDragging = false, hasMoved = false;
+
+      function onStart(clientY) {
+        phDragging = true; hasMoved = false;
+        phStartY = clientY; phStartH = sheet.offsetHeight;
+        sheet.style.transition = "none";
+      }
+      function onMove(clientY) {
+        if (!phDragging) return;
+        var delta = phStartY - clientY;
+        if (Math.abs(delta) > 4) hasMoved = true;
+        var newH = Math.max(100, Math.min(window.innerHeight * 0.90, phStartH + delta));
+        sheet.style.height = newH + "px";
+      }
+      function onEnd() {
+        if (!phDragging) return;
+        phDragging = false;
+        sheet.style.transition = "";
+        var h = sheet.offsetHeight;
+        if (h < Math.min(220, phStartH * 0.65) || phStartH - h > 90) {
+          sheet.style.height = "";
+          sheet.classList.remove("sheet--expanded");
+          closeAllModals();
+        } else if (h > window.innerHeight * 0.60) {
+          sheet.classList.add("sheet--expanded");
+          sheet.style.height = "";
+        } else {
+          sheet.classList.remove("sheet--expanded");
+          sheet.style.height = "";
+        }
+      }
+
+      handle.addEventListener("click", function() {
+        if (hasMoved) return;
+        sheet.classList.toggle("sheet--expanded");
+        sheet.style.height = "";
+      });
+      handle.addEventListener("mousedown", function(e) { onStart(e.clientY); });
+      document.addEventListener("mousemove", function(e) { if (phDragging) onMove(e.clientY); });
+      document.addEventListener("mouseup", function() { onEnd(); });
+      handle.addEventListener("touchstart", function(e) { onStart(e.touches[0].clientY); }, { passive: true });
+      handle.addEventListener("touchmove",  function(e) { onMove(e.touches[0].clientY); },  { passive: true });
+      handle.addEventListener("touchend",   function() { onEnd(); });
+    });
+  }
+
+  // ── WhatsApp Contact Modal ─────────────────────────────────────
   window.openContactModal = function(name, phone, role) {
     if (!waModal) return;
-    document.getElementById("modal-contact-name").textContent = name;
-    document.getElementById("modal-contact-role").textContent = role;
-    document.getElementById("modal-contact-phone").textContent = phone;
-    
-    const sendBtn = document.getElementById("btn-send-wa");
+    var nameEl  = document.getElementById("modal-contact-name");
+    var roleEl  = document.getElementById("modal-contact-role");
+    var phoneEl = document.getElementById("modal-contact-phone");
+    if (nameEl)  nameEl.textContent  = name;
+    if (roleEl)  roleEl.textContent  = role;
+    if (phoneEl) phoneEl.textContent = phone;
+
+    var sendBtn = document.getElementById("btn-send-wa");
     if (sendBtn) {
-      sendBtn.onclick = () => {
-        alert(`Membuka simulasi WhatsApp ke ${name} (${phone}). Pesan keselamatan siap dikirim.`);
-        closeContactModal();
+      sendBtn.onclick = function() {
+        alert("Membuka simulasi WhatsApp ke " + name + " (" + phone + "). Pesan keselamatan siap dikirim.");
+        closeAllModals();
       };
     }
-
     waModal.style.display = "block";
     if (modalOverlay) modalOverlay.style.display = "block";
   };
 
-  function closeAllModals() {
-    if (waModal) waModal.style.display = "none";
-    const repModal = document.getElementById("new-report-modal");
-    if (repModal) repModal.style.display = "none";
-    if (modalOverlay) modalOverlay.style.display = "none";
-  }
-
-  document.getElementById("btn-close-contact")?.addEventListener("click", closeAllModals);
+  var btnCloseContact = document.getElementById("btn-close-contact");
+  if (btnCloseContact) btnCloseContact.addEventListener("click", closeAllModals);
   if (modalOverlay) modalOverlay.addEventListener("click", closeAllModals);
 
-  // Tab Switching
-  tabs.forEach(tab => {
-    tab.addEventListener("click", () => {
-      tabs.forEach(t => t.classList.remove("active"));
+  // ── Tab Switching ──────────────────────────────────────────────
+  tabs.forEach(function(tab) {
+    tab.addEventListener("click", function() {
+      tabs.forEach(function(t) { t.classList.remove("active"); });
       tab.classList.add("active");
       currentTab = tab.getAttribute("data-tab");
 
       if (currentTab === "laporan") {
         if (partnersSection) partnersSection.style.display = "none";
-        if (reportsSection) reportsSection.style.display = "block";
+        if (reportsSection)  reportsSection.style.display  = "block";
         renderFieldReports();
       } else {
         if (partnersSection) partnersSection.style.display = "block";
-        if (reportsSection) reportsSection.style.display = "none";
+        if (reportsSection)  reportsSection.style.display  = "none";
         renderPartners();
       }
     });
   });
 
-  // Destination Select Filter
-  if (destinationFilter) {
-    destinationFilter.addEventListener("change", (e) => {
-      selectedDest = e.target.value;
-      renderPartners();
-      renderFieldReports();
+  // ── Field Report Submit ────────────────────────────────────────
+  var reportForm  = document.getElementById("new-report-form");
+  var reportModal = document.getElementById("new-report-modal");
+
+  var btnOpenReport = document.getElementById("btn-open-report-modal");
+  if (btnOpenReport) {
+    btnOpenReport.addEventListener("click", function() {
+      if (reportModal) reportModal.style.display = "block";
+      if (modalOverlay) modalOverlay.style.display = "block";
     });
   }
 
-  // Submit Field Report Form
-  const reportForm = document.getElementById("new-report-form");
-  const reportModal = document.getElementById("new-report-modal");
-
-  document.getElementById("btn-open-report-modal")?.addEventListener("click", () => {
-    if (reportModal) reportModal.style.display = "block";
-    if (modalOverlay) modalOverlay.style.display = "block";
-  });
-
-  document.getElementById("btn-close-report-modal")?.addEventListener("click", () => {
-    if (reportModal) reportModal.style.display = "none";
-    if (modalOverlay) modalOverlay.style.display = "none";
-  });
+  var btnCloseReport = document.getElementById("btn-close-report-modal");
+  if (btnCloseReport) btnCloseReport.addEventListener("click", closeAllModals);
 
   if (reportForm) {
-    reportForm.addEventListener("submit", (e) => {
+    reportForm.addEventListener("submit", function(e) {
       e.preventDefault();
-      const destId = document.getElementById("report-dest").value;
-      const targetDest = data.destinations.find(d => d.id === destId);
-      const urgencyVal = document.getElementById("report-urgency").value;
-      const titleVal = document.getElementById("report-title").value;
-      const contentVal = document.getElementById("report-content").value;
+      var destId      = document.getElementById("report-dest").value;
+      var targetDest  = data.destinations ? data.destinations.find(function(d) { return d.id === destId; }) : null;
+      var urgencyVal  = document.getElementById("report-urgency").value;
+      var titleVal    = document.getElementById("report-title").value;
+      var contentVal  = document.getElementById("report-content").value;
 
-      const newReport = {
-        id: "rep_" + Date.now(),
-        destinationId: destId,
+      data.fieldReports.unshift({
+        id:              "rep_" + Date.now(),
+        destinationId:   destId,
         destinationName: targetDest ? targetDest.name : "Destinasi",
-        urgency: urgencyVal,
-        urgencyLabel: urgencyVal === "danger" ? "DITUTUP SEMENTARA" : (urgencyVal === "warn" ? "PERHATIAN JALUR" : "KONDISI AMAN"),
-        authorName: "Arya Pratama (Anda)",
-        authorRole: "Laporan Terverifikasi",
-        time: "Baru saja",
-        title: titleVal,
-        content: contentVal,
-        hasImage: true,
-        imagePlaceholder: "📷 Bukti Foto Terunggah",
-        likes: 1,
-        verifiedReport: true
-      };
+        urgency:         urgencyVal,
+        urgencyLabel:    urgencyVal === "danger" ? "DITUTUP SEMENTARA" : (urgencyVal === "warn" ? "PERHATIAN JALUR" : "KONDISI AMAN"),
+        authorName:      "Arya Pratama (Anda)",
+        authorRole:      "Laporan Terverifikasi",
+        time:            "Baru saja",
+        title:           titleVal,
+        content:         contentVal,
+        hasImage:        true,
+        imagePlaceholder: "\uD83D\uDCF7 Bukti Foto Terunggah",
+        likes:           1,
+        verifiedReport:  true
+      });
 
-      data.fieldReports.unshift(newReport);
-      
       reportForm.reset();
-      if (reportModal) reportModal.style.display = "none";
-      if (modalOverlay) modalOverlay.style.display = "none";
-
-      // Switch to laporan tab
-      document.querySelector(".tab-btn[data-tab='laporan']")?.click();
-      alert("✅ Laporan kondisi lapangan Anda berhasil dikirim dan diverifikasi!");
+      closeAllModals();
+      var laporanTab = document.querySelector(".tab-btn[data-tab='laporan']");
+      if (laporanTab) laporanTab.click();
+      alert("\u2705 Laporan kondisi lapangan Anda berhasil dikirim dan diverifikasi!");
     });
   }
 
-  // Initial render
+  // ── Initial Render ─────────────────────────────────────────────
   renderPartners();
+  setupSheetDragHandles();
 });

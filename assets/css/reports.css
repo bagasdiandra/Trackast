@@ -1,234 +1,736 @@
 /* ══════════════════════════════════════════════════════════════════
-   REPORTS.CSS — TrackCast Safety Recommendations & User Reviews
+   REPORTS.CSS — TrackCast Safety Recommendations & Public Field Reports
+   Pixel-accurate styling matching the mobile design system
    ══════════════════════════════════════════════════════════════════ */
 
-/* AI Recommendation Score Card */
-.ai-score-card {
-  background: linear-gradient(135deg, #132545 0%, #0d1a30 100%);
-  border: 1px solid rgba(0, 194, 204, 0.3);
-  border-radius: var(--r-lg);
-  padding: 16px;
-  margin-bottom: 16px;
+/* Page Header */
+.page-title-section {
+  margin-top: 4px;
+  margin-bottom: 20px;
+}
+
+.page-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #FFFFFF;
+  line-height: 1.25;
+  margin-bottom: 4px;
+}
+
+.page-subtitle {
+  font-size: 12.5px;
+  color: #7492B3;
+  line-height: 1.45;
+}
+
+/* Section Kickers (Uppercase Section Labels) */
+.section-kicker {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: #4A7A9E;
+  margin-bottom: 10px;
+}
+
+/* ── DESTINATION SELECTOR CARD ────────────────────────────────── */
+.destination-section {
+  margin-bottom: 18px;
+}
+
+.dest-selector-card {
   position: relative;
-  overflow: hidden;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
-}
-
-.ai-score-card::after {
-  content: '';
-  position: absolute;
-  top: -30px;
-  right: -30px;
-  width: 140px;
-  height: 140px;
-  background: radial-gradient(circle, rgba(0, 194, 204, 0.15) 0%, transparent 70%);
-  pointer-events: none;
-}
-
-.ai-card-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  background: #0D1F38;
+  border: 1px solid #1C3B63;
+  border-radius: 16px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
 }
 
-.ai-score-display {
+.dest-selector-card:hover,
+.dest-selector-card:focus-within {
+  border-color: #00C2CC;
+  background: #0F233E;
+  box-shadow: 0 4px 20px rgba(0, 194, 204, 0.15);
+}
+
+.dest-info-col {
   display: flex;
-  align-items: baseline;
-  gap: 4px;
+  align-items: center;
+  gap: 12px;
 }
 
-.score-num {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 32px;
-  font-weight: 700;
+.dest-icon {
+  font-size: 26px;
   line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
 }
 
-.score-max {
-  font-size: 13px;
-  color: var(--text-dim);
-  font-family: 'JetBrains Mono', monospace;
-}
-
-@media (max-width: 480px) {
-  .ai-score-card {
-    padding: 14px;
-    margin-bottom: 14px;
-  }
-  
-  .ai-card-top {
-    margin-bottom: 10px;
-  }
-  
-  .score-num {
-    font-size: 28px;
-  }
-  
-  .score-max {
-    font-size: 12px;
-  }
-  
-  .ai-summary-text {
-    font-size: 14px;
-    margin-bottom: 6px;
-  }
-  
-  .ai-risk-banner {
-    padding: 7px 10px;
-    font-size: 11px;
-    margin-bottom: 12px;
-  }
-  
-  .ai-rationale-box {
-    padding: 8px 10px;
-    font-size: 11px;
-    margin-bottom: 14px;
-  }
-  
-  .check-item {
-    font-size: 12px;
-    margin-bottom: 6px;
-  }
-  
-  .action-step-item {
-    font-size: 12px;
-    margin-bottom: 8px;
-  }
-}
-
-.ai-summary-text {
-  font-size: 15px;
+.dest-name {
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
   font-weight: 700;
-  color: var(--text);
-  margin-bottom: 8px;
-  line-height: 1.35;
+  color: #FFFFFF;
+  line-height: 1.25;
 }
 
-.ai-risk-banner {
+.dest-region {
+  font-size: 12px;
+  color: #7492B3;
+  margin-top: 2px;
+}
+
+.dest-badge-col {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 12px;
-  background: rgba(248, 113, 113, 0.1);
-  border: 1px solid rgba(248, 113, 113, 0.25);
-  border-radius: var(--r-sm);
-  color: var(--danger);
+}
+
+.dest-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
   font-size: 12px;
   font-weight: 600;
-  margin-bottom: 14px;
+  letter-spacing: 0.2px;
+  transition: all 0.2s;
 }
 
-.ai-rationale-box {
-  background: rgba(22, 34, 64, 0.5);
-  border-left: 3px solid var(--primary);
-  padding: 10px 12px;
-  border-radius: 0 var(--r-sm) var(--r-sm) 0;
-  font-size: 12px;
-  color: var(--text-dim);
-  line-height: 1.5;
-  margin-bottom: 16px;
+.dest-status-pill.waspada {
+  background: rgba(251, 191, 36, 0.12);
+  border: 1px solid rgba(251, 191, 36, 0.45);
+  color: #FBBF24;
 }
 
-/* Must-Haves Checklist */
-.checklist-group {
-  margin-bottom: 16px;
+.dest-status-pill.aman {
+  background: rgba(52, 211, 153, 0.12);
+  border: 1px solid rgba(52, 211, 153, 0.45);
+  color: #34D399;
 }
 
-.check-item {
+.dest-status-pill.bahaya {
+  background: rgba(248, 113, 113, 0.12);
+  border: 1px solid rgba(248, 113, 113, 0.45);
+  color: #F87171;
+}
+
+.pill-dot {
+  font-size: 9px;
+  line-height: 1;
+}
+
+.dest-caret {
+  color: #7492B3;
+  font-size: 14px;
+}
+
+.dest-select-hidden {
+  display: none;
+}
+
+/* ── DESTINATION BOTTOM SHEET PICKER ─────────────────────────── */
+.dest-select-list {
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
   gap: 8px;
-  font-size: 12.5px;
-  color: var(--text);
-  margin-bottom: 8px;
-  line-height: 1.4;
+  max-height: 60vh;
+  overflow-y: auto;
+  padding-right: 2px;
+  margin-top: 4px;
 }
 
-.check-icon {
-  color: var(--safe);
-  font-weight: 700;
+.dest-select-list::-webkit-scrollbar {
+  width: 4px;
+}
+.dest-select-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+.dest-select-list::-webkit-scrollbar-thumb {
+  background: #1C3B63;
+  border-radius: 4px;
+}
+
+.dest-select-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #0F223D;
+  border: 1px solid #1B385E;
+  border-radius: 14px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  user-select: none;
+}
+
+.dest-select-item:hover {
+  background: #12294A;
+  border-color: #00C2CC;
+  transform: translateY(-1px);
+}
+
+.dest-select-item:active {
+  transform: translateY(0);
+}
+
+.dest-select-item.active {
+  background: #122847;
+  border-color: #00C2CC;
+  box-shadow: 0 0 14px rgba(0, 194, 204, 0.2);
+}
+
+.dest-item-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.dest-item-icon {
+  font-size: 22px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
 }
 
-/* Action Plan Step Items */
-.action-step-item {
+.dest-item-text {
+  min-width: 0;
+}
+
+.dest-item-name {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #FFFFFF;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dest-item-region {
+  font-size: 11.5px;
+  color: #6E8FA9;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dest-item-right {
+  flex-shrink: 0;
+  margin-left: 10px;
+}
+
+/* ── SAFETY ANALYSIS CARD ─────────────────────────────────────── */
+.safety-analysis-card {
+  background: #0C1E37;
+  border: 1px solid #1A3860;
+  border-radius: 20px;
+  padding: 18px 16px;
+  margin-bottom: 24px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+}
+
+.safety-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.safety-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16.5px;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.robot-icon {
+  font-size: 18px;
+}
+
+.ai-smart-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(0, 194, 204, 0.08);
+  border: 1px solid rgba(0, 194, 204, 0.35);
+  color: #00C2CC;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.safety-card-sub {
+  font-size: 12px;
+  color: #7492B3;
+  line-height: 1.45;
+  margin-bottom: 14px;
+}
+
+/* Alert Boxes (Warning & Tip) */
+.alert-box {
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+}
+
+.alert-box--warning {
+  background: rgba(251, 191, 36, 0.07);
+  border: 1px solid rgba(251, 191, 36, 0.28);
+}
+
+.alert-box--tip {
+  background: rgba(0, 194, 204, 0.07);
+  border: 1px solid rgba(0, 194, 204, 0.25);
+}
+
+.alert-box-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.alert-box--warning .alert-box-title {
+  color: #FBBF24;
+}
+
+.alert-box--tip .alert-box-title {
+  color: #00C2CC;
+}
+
+.alert-box-desc {
+  font-size: 11.5px;
+  color: #9BB4CE;
+  line-height: 1.4;
+  margin-top: 4px;
+  padding-left: 23px;
+}
+
+/* 2x2 Metrics Grid */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 14px;
+  margin-bottom: 18px;
+}
+
+.metric-card {
+  background: #112440;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+.metric-label {
+  font-size: 11px;
+  color: #6E91B5;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.metric-value {
+  font-family: 'Poppins', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #FFFFFF;
+  line-height: 1.2;
+}
+
+/* Elevation Chart Section */
+.elevation-section {
+  margin-top: 18px;
+}
+
+.chart-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #4A7A9E;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.elevation-chart-card {
+  background: #08162B;
+  border: 1px solid rgba(0, 194, 204, 0.16);
+  border-radius: 14px;
+  padding: 14px 12px 16px 12px;
+}
+
+.chart-svg-container {
+  width: 100%;
+  position: relative;
+  margin-bottom: 14px;
+}
+
+.chart-svg-container svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.elevation-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 16px;
+  row-gap: 8px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.elevation-stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+.stat-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #8AA7C5;
+}
+
+.stat-dot {
+  color: #00C2CC;
+  font-size: 10px;
+  line-height: 1;
+}
+
+.stat-temp {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  color: #FFFFFF;
+  font-size: 13px;
+}
+
+/* ── PANDUAN PERSIAPAN PERJALANAN ─────────────────────────────── */
+.travel-prep-section {
+  margin-bottom: 24px;
+}
+
+.prep-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.prep-card {
+  background: #0D203A;
+  border: 1px solid #1C3B63;
+  border-radius: 14px;
+  padding: 14px 12px;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.2s, background 0.2s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.prep-card:hover {
+  transform: translateY(-2px);
+  border-color: #00C2CC;
+  background: #102646;
+}
+
+.prep-card:active {
+  transform: translateY(0);
+}
+
+.prep-icon-box {
+  font-size: 22px;
+  margin-bottom: 8px;
+  line-height: 1;
+}
+
+.prep-card-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 3px;
+  line-height: 1.25;
+}
+
+.prep-card-sub {
+  font-size: 11px;
+  color: #7492B3;
+  line-height: 1.35;
+}
+
+/* ── LAPORAN PUBLIK WISATAWAN ─────────────────────────────────── */
+.public-reports-section {
+  margin-bottom: 30px;
+}
+
+.reports-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.report-card-modern {
+  background: #0D1F38;
+  border: 1px solid #1A375C;
+  border-radius: 16px;
+  padding: 14px 14px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.report-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.user-avatar-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #0C436B;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  color: #FFFFFF;
+  flex-shrink: 0;
+  border: 1px solid rgba(0, 194, 204, 0.3);
+}
+
+.user-meta-col {
+  flex: 1;
+  min-width: 0;
+}
+
+.user-name-stars-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.report-author-name {
+  font-family: 'Poppins', sans-serif;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #FFFFFF;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.report-stars {
+  color: #FBBF24;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.report-location-time {
+  font-size: 11px;
+  color: #6C8BAE;
+  margin-top: 1px;
+}
+
+.report-comment-text {
+  font-size: 12.5px;
+  color: #E2ECF8;
+  line-height: 1.45;
+  margin-bottom: 12px;
+}
+
+.report-media-box {
+  background: #13243E;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+}
+
+/* Button: + Tambah Laporan Perjalanan */
+.btn-add-travel-report {
+  width: 100%;
+  padding: 13px 16px;
+  background: rgba(0, 194, 204, 0.05);
+  border: 1.5px solid #00C2CC;
+  border-radius: 12px;
+  color: #00C2CC;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 16px rgba(0, 194, 204, 0.1);
+}
+
+.btn-add-travel-report:hover {
+  background: rgba(0, 194, 204, 0.15);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 194, 204, 0.25);
+}
+
+.btn-add-travel-report:active {
+  transform: translateY(0);
+}
+
+/* ── MODALS & DETAILS DRAWER ─────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 10, 20, 0.75);
+  backdrop-filter: blur(4px);
+  z-index: var(--z-modal);
+}
+
+.modal-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: var(--app-max-width);
+  background: #0E1F38;
+  border: 1px solid #1C3B63;
+  border-bottom: none;
+  border-radius: 24px 24px 0 0;
+  padding: 16px 18px calc(24px + var(--sab)) 18px;
+  z-index: calc(var(--z-modal) + 1);
+  box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.6);
+  max-height: 85vh;
+  overflow-y: auto;
+  animation: slideUp 0.25s ease-out;
+  transition: height 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.modal-sheet.sheet--expanded {
+  height: 88svh !important;
+  max-height: 88svh !important;
+}
+
+.modal-sheet.sheet--expanded .dest-select-list {
+  max-height: calc(88svh - 110px);
+}
+
+@keyframes slideUp {
+  from { transform: translate(-50%, 100%); }
+  to   { transform: translate(-50%, 0); }
+}
+
+.sheet-handle {
+  width: 44px;
+  height: 5px;
+  border-radius: 4px;
+  background: #25446E;
+  margin: 0 auto 16px auto;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  position: relative;
+  transition: background-color 0.2s, transform 0.15s, width 0.15s;
+}
+
+/* Enlarge hit area for smooth touch interaction */
+.sheet-handle::before {
+  content: '';
+  position: absolute;
+  top: -12px;
+  bottom: -12px;
+  left: -30px;
+  right: -30px;
+  cursor: grab;
+}
+
+.sheet-handle:hover {
+  background: #3B669E;
+}
+
+.sheet-handle:active {
+  cursor: grabbing;
+  background: #00C2CC;
+  transform: scaleX(1.15);
+}
+
+.sheet-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 4px;
+}
+
+.sheet-sub {
+  font-size: 12px;
+  color: #7492B3;
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+
+/* Guide details inside drawer */
+.guide-content-box {
+  background: #0A172B;
+  border: 1px solid #183355;
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 16px;
+}
+
+.checklist-item {
   display: flex;
   align-items: flex-start;
   gap: 10px;
   margin-bottom: 10px;
   font-size: 12.5px;
-  color: var(--text-dim);
-  line-height: 1.45;
+  color: #D6E4F5;
+  line-height: 1.4;
 }
 
-.step-circle {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: var(--card-2);
-  border: 1px solid var(--border-2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--primary);
-  flex-shrink: 0;
-  margin-top: 1px;
+.checklist-item:last-child {
+  margin-bottom: 0;
 }
 
-/* Section Header */
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 14px;
-}
-
-.section-title {
-  font-family: 'Poppins', sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--text);
-}
-
-/* Review Cards */
-.review-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  padding: 14px;
-  margin-bottom: 12px;
-}
-
-.review-author-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 6px;
-}
-
-.review-author-name {
-  font-size: 13.5px;
-  font-weight: 700;
-  color: var(--text);
-}
-
-.review-date {
-  font-size: 11px;
-  color: var(--text-muted);
-}
-
-.review-rating-stars {
-  color: #FBBF24;
-  font-size: 12px;
-  margin-bottom: 6px;
-}
-
-.review-text {
-  font-size: 12.5px;
-  color: var(--text-dim);
-  line-height: 1.45;
+.checklist-check {
+  color: #00C2CC;
+  font-weight: bold;
 }

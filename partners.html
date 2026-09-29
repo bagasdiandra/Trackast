@@ -37,27 +37,25 @@
         <button type="button" class="tab-btn" data-tab="laporan">Laporan Lapangan</button>
       </div>
 
-      <!-- Destination Filter Dropdown -->
-      <div class="form-group">
-        <label for="filter-dest-select" class="form-label">
-          Wilayah Destinasi
-        </label>
-        <select id="filter-dest-select" class="form-input">
-          <option value="semua">Semua Destinasi di Indonesia</option>
-          <option value="rinjani">Gunung Rinjani (Lombok)</option>
-          <option value="pantaipink">Pantai Pink (Lombok Timur)</option>
-          <option value="prambanan">Candi Prambanan (Sleman, DIY)</option>
-          <option value="bromo">Gunung Bromo (Probolinggo)</option>
-          <option value="semeru">Gunung Semeru (Lumajang)</option>
-          <option value="madakaripura">Air Terjun Madakaripura (Probolinggo)</option>
-          <option value="tumpaksewu">Air Terjun Tumpak Sewu (Lumajang)</option>
-          <option value="kuta">Pantai Kuta (Bali)</option>
-          <option value="nusadua">Pantai Nusa Dua (Bali)</option>
-          <option value="komodo">Taman Nasional Komodo (NTT)</option>
-          <option value="borobudur">Candi Borobudur (Magelang)</option>
-          <option value="tobalake">Danau Toba & Samosir (Sumut)</option>
-          <option value="rajaampat">Kepulauan Raja Ampat (Papua)</option>
-        </select>
+      <!-- Destination Filter — Custom Card Picker (sama seperti reports.html) -->
+      <div class="partners-dest-section">
+        <div class="section-kicker">FILTER WILAYAH DESTINASI</div>
+        <div class="dest-selector-card" id="partners-dest-trigger" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Pilih Destinasi Mitra">
+          <div class="dest-info-col">
+            <span class="dest-icon" id="partners-dest-icon">🗺️</span>
+            <div>
+              <div class="dest-name" id="partners-dest-name">Semua Destinasi</div>
+              <div class="dest-region" id="partners-dest-region">Seluruh Indonesia</div>
+            </div>
+          </div>
+          <div class="dest-badge-col">
+            <span class="dest-status-pill aman" id="partners-dest-pill">
+              <span class="pill-dot">●</span> <span id="partners-dest-status">Semua</span>
+            </span>
+            <span class="dest-caret">▾</span>
+          </div>
+          <input type="hidden" id="filter-dest-select" value="semua">
+        </div>
       </div>
 
       <!-- Partners Directory List -->
@@ -76,8 +74,17 @@
 
     </main>
 
-    <!-- Contact WhatsApp Modal -->
+    <!-- Modal Overlay -->
     <div id="modal-overlay-partners" class="modal-overlay" style="display: none;"></div>
+
+    <!-- Modal: Pilih Destinasi (Bottom Sheet) -->
+    <div id="partners-dest-modal" class="modal-sheet" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="modal-partners-dest-title">
+      <div class="sheet-handle"></div>
+      <h3 class="sheet-title" id="modal-partners-dest-title">Pilih Destinasi</h3>
+      <div class="dest-select-list" id="partners-dest-list">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
     <div id="contact-modal" class="modal-sheet" style="display: none;">
       <div class="sheet-handle"></div>
       <div style="text-align: center; margin-bottom: 16px;">

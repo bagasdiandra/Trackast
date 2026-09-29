@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>TrackCast — Rekomendasi Keselamatan & Laporan Wisatawan</title>
-  <meta name="description" content="Rekomendasi mitigasi keselamatan cerdas berbasis BMKG dan laporan kondisi aktual dari sesama wisatawan.">
+  <title>TrackCast — Laporan & Rekomendasi Keselamatan</title>
+  <meta name="description" content="Analisis keselamatan pintar berbasis cuaca hyperlocal BMKG dan ulasan komunitas wisatawan terkini.">
   <link rel="stylesheet" href="assets/css/global.css">
   <link rel="stylesheet" href="assets/css/reports.css">
 </head>
@@ -14,143 +14,222 @@
     <!-- App Bar -->
     <header class="app-bar">
       <div class="app-bar-brand">
-        <span class="brand-track">REKOMENDASI</span><span class="brand-cast"> AI</span>
+        <span class="brand-track">TRACK</span><span class="brand-cast">CAST</span>
       </div>
       <div class="app-bar-actions">
         <a href="index.html" class="icon-btn" aria-label="Beranda">🏠</a>
+        <a href="auth.html" class="icon-btn" aria-label="Profil Pengguna">👤</a>
       </div>
     </header>
 
     <!-- Main Content -->
     <main class="main-content">
 
-      <!-- Action Button for Submitting Field Report -->
-      <button type="button" class="btn-new-report-fab" id="btn-open-report-modal">
-        <span>✍️</span> Kirim Pembaruan Lapangan
-      </button>
-
-      <!-- Active Destination Selector -->
-      <section class="form-group" style="margin-bottom: 16px;">
-        <label for="recom-dest-select" class="form-label">
-          Pilih Destinasi untuk Dianalisis
-        </label>
-        <select id="recom-dest-select" class="form-input">
-          <option value="rinjani">Gunung Rinjani (Lombok, NTB)</option>
-          <option value="pantaipink">Pantai Pink (Lombok Timur, NTB)</option>
-          <option value="prambanan">Candi Prambanan (Sleman, DIY)</option>
-          <option value="bromo">Gunung Bromo (Probolinggo, Jatim)</option>
-          <option value="semeru">Gunung Semeru (Lumajang, Jatim)</option>
-          <option value="madakaripura">Air Terjun Madakaripura (Probolinggo, Jatim)</option>
-          <option value="tumpaksewu">Air Terjun Tumpak Sewu (Lumajang, Jatim)</option>
-          <option value="kuta">Pantai Kuta (Badung, Bali)</option>
-          <option value="nusadua">Pantai Nusa Dua (Badung, Bali)</option>
-          <option value="komodo">Taman Nasional Komodo (Manggarai Barat, NTT)</option>
-          <option value="borobudur">Candi Borobudur (Magelang, Jateng)</option>
-          <option value="tobalake">Danau Toba (Sumatera Utara)</option>
-          <option value="rajaampat">Kepulauan Raja Ampat (Papua Barat Daya)</option>
-        </select>
+      <!-- Page Header -->
+      <section class="page-title-section">
+        <h1 class="page-title">Laporan &amp; Rekomendasi</h1>
+        <p class="page-subtitle">Analisis keselamatan pintar + ulasan komunitas wisatawan</p>
       </section>
 
-      <!-- AI Smart Recommendation Container -->
-      <section id="ai-recommendation-container">
-        <!-- Rendered by JS -->
+      <!-- Rencana Perjalanan Ke (Destination Selector Card) -->
+      <section class="destination-section">
+        <div class="section-kicker">RENCANA PERJALANAN KE</div>
+        <div class="dest-selector-card" id="dest-card-trigger" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Pilih Destinasi Perjalanan">
+          <div class="dest-info-col">
+            <span class="dest-icon" id="dest-icon">🏔️</span>
+            <div>
+              <div class="dest-name" id="dest-display-name">Gunung Rinjani</div>
+              <div class="dest-region" id="dest-display-region">Lombok, NTB</div>
+            </div>
+          </div>
+          <div class="dest-badge-col">
+            <span class="dest-status-pill waspada" id="dest-status-pill">
+              <span class="pill-dot">●</span> <span id="dest-status-text">Waspada</span>
+            </span>
+            <span class="dest-caret">▾</span>
+          </div>
+          <input type="hidden" id="recom-dest-select" value="rinjani">
+        </div>
       </section>
 
-      <!-- User Reviews Section -->
-      <section>
-        <div class="section-header">
-          <h2 class="section-title">Ulasan & Catatan Perjalanan</h2>
-          <button type="button" class="btn btn-secondary" id="btn-open-review-modal" style="padding: 6px 12px; font-size: 12px;">
-            + Tulis Ulasan
-          </button>
+      <!-- Analisis Keselamatan Card -->
+      <section class="safety-analysis-card" id="safety-card">
+        <div class="safety-card-header">
+          <div class="safety-card-title">
+            <span class="robot-icon">🤖</span>
+            <span>Analisis Keselamatan</span>
+          </div>
+          <span class="ai-smart-badge">AI Smart</span>
+        </div>
+        <p class="safety-card-sub">
+          Rekomendasi berbasis prakiraan cuaca hyperlocal BMKG dan laporan mitra lapangan terkini.
+        </p>
+
+        <!-- Warning Alert Banner -->
+        <div class="alert-box alert-box--warning" id="alert-warning-box">
+          <div class="alert-box-title">
+            <span>⚠️</span>
+            <span id="alert-warning-title">Peringatan: Kabut Tebal Diprediksi Berlanjut</span>
+          </div>
+          <p class="alert-box-desc" id="alert-warning-desc">
+            Pantau kondisi cuaca secara berkala sebelum dan selama perjalanan.
+          </p>
         </div>
 
-        <div id="user-reviews-list">
+        <!-- Suggestion Alert Banner -->
+        <div class="alert-box alert-box--tip" id="alert-tip-box">
+          <div class="alert-box-title">
+            <span>💡</span>
+            <span id="alert-tip-title">Saran: Persiapkan Perlengkapan Ekstra</span>
+          </div>
+          <p class="alert-box-desc" id="alert-tip-desc">
+            Bawa jas hujan, senter cadangan, dan perlengkapan pertolongan pertama.
+          </p>
+        </div>
+
+        <!-- 2x2 Metrics Grid -->
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-label">🌡️ Suhu Destinasi</div>
+            <div class="metric-value" id="val-temp">14°C</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">💧 Kelembaban</div>
+            <div class="metric-value" id="val-humidity">82%</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">💨 Kecepatan Angin</div>
+            <div class="metric-value" id="val-wind">28 km/h</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">⏱️ Update Terakhir</div>
+            <div class="metric-value" id="val-updated">09:00 WITA</div>
+          </div>
+        </div>
+
+        <!-- Profil Suhu Per Ketinggian (Hyperlocal Grid) -->
+        <div class="elevation-section">
+          <div class="chart-section-title">PROFIL SUHU PER KETINGGIAN (Hyperlocal Grid)</div>
+          <div class="elevation-chart-card">
+            <div class="chart-svg-container" id="chart-svg-container">
+              <!-- Dynamically populated SVG -->
+            </div>
+            <div class="elevation-stats-grid" id="elevation-stats-grid">
+              <!-- Dynamically populated points readout -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Panduan Persiapan Perjalanan -->
+      <section class="travel-prep-section">
+        <div class="section-kicker">PANDUAN PERSIAPAN PERJALANAN</div>
+        <div class="prep-grid">
+          <div class="prep-card" data-guide="equipment" role="button" tabindex="0">
+            <div class="prep-icon-box">🎒</div>
+            <div class="prep-card-title">Perlengkapan Wajib</div>
+            <div class="prep-card-sub">Daftar barang sesuai cuaca &amp; medan</div>
+          </div>
+          <div class="prep-card" data-guide="budget" role="button" tabindex="0">
+            <div class="prep-icon-box">💰</div>
+            <div class="prep-card-title">Estimasi Biaya</div>
+            <div class="prep-card-sub">Akomodasi &amp; transport dari mitra resmi</div>
+          </div>
+          <div class="prep-card" data-guide="route" role="button" tabindex="0">
+            <div class="prep-icon-box">🛣️</div>
+            <div class="prep-card-title">Rute Teraman</div>
+            <div class="prep-card-sub">Rekomendasi jalur dari laporan terkini</div>
+          </div>
+          <div class="prep-card" data-guide="best_time" role="button" tabindex="0">
+            <div class="prep-icon-box">📅</div>
+            <div class="prep-card-title">Waktu Terbaik</div>
+            <div class="prep-card-sub">Prakiraan cuaca 7 hari ke depan</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Laporan Publik Wisatawan -->
+      <section class="public-reports-section">
+        <div class="section-kicker" id="public-reports-kicker">LAPORAN PUBLIK WISATAWAN — GUNUNG RINJANI</div>
+        <div class="reports-feed" id="public-reports-feed">
           <!-- Populated by JS -->
         </div>
+
+        <button type="button" class="btn-add-travel-report" id="btn-open-report-modal">
+          <span>+</span> Tambah Laporan Perjalanan
+        </button>
       </section>
 
     </main>
 
-    <!-- Upload Field Report Modal -->
+    <!-- Modal Overlay -->
     <div id="modal-overlay-reports" class="modal-overlay" style="display: none;"></div>
 
-    <div id="new-report-modal" class="modal-sheet" style="display: none;">
+    <!-- Modal: Pilih Destinasi (Bottom Sheet) -->
+    <div id="dest-select-modal" class="modal-sheet" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="modal-dest-title">
       <div class="sheet-handle"></div>
-      <h3 style="font-size: 17px; margin-bottom: 4px;">Kirim Pembaruan Lapangan</h3>
-      <p style="font-size: 12px; color: var(--text-dim); margin-bottom: 16px;">
-        Informasi kondisi terkini dari Anda sangat berharga bagi sesama wisatawan.
+      <h3 class="sheet-title" id="modal-dest-title">Pilih Destinasi</h3>
+      <div class="dest-select-list" id="dest-select-list">
+        <!-- Rendered dynamically by JS matching the design -->
+      </div>
+    </div>
+
+    <!-- Modal Form: Tambah Laporan Perjalanan -->
+    <div id="new-report-modal" class="modal-sheet" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="modal-report-title">
+      <div class="sheet-handle"></div>
+      <h3 class="sheet-title" id="modal-report-title">Tambah Laporan Perjalanan</h3>
+      <p class="sheet-sub">
+        Bagikan kondisi aktual di <strong id="modal-report-dest-name">Gunung Rinjani</strong> untuk keselamatan sesama wisatawan.
       </p>
 
       <form id="new-report-form">
-        <div class="form-group">
-          <label class="form-label" for="report-dest">Destinasi Terkait</label>
-          <select id="report-dest" class="form-input" required>
-            <option value="rinjani">Gunung Rinjani (Lombok)</option>
-            <option value="bromo">Gunung Bromo (Jawa Timur)</option>
-            <option value="tumpaksewu">Air Terjun Tumpak Sewu</option>
-            <option value="kuta">Pantai Kuta (Bali)</option>
-            <option value="komodo">TN Komodo & Labuan Bajo (NTT)</option>
-            <option value="borobudur">Candi Borobudur (Magelang)</option>
-            <option value="tobalake">Danau Toba & Samosir (Sumut)</option>
-            <option value="rajaampat">Kepulauan Raja Ampat (Papua)</option>
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label" for="report-rating">Penilaian Keamanan / Kondisi</label>
+          <select id="report-rating" class="form-input">
+            <option value="5">⭐⭐⭐⭐⭐ Jalur Sangat Aman & Jelas</option>
+            <option value="4" selected>⭐⭐⭐⭐ Cukup Aman dengan Perlengkapan Standar</option>
+            <option value="3">⭐⭐⭐ Jalur Licin / Berbatu Menantang</option>
+            <option value="2">⭐⭐ Waspada Cuaca Buruk & Kabut</option>
+            <option value="1">⭐ Bahaya / Tidak Disarankan Naik</option>
           </select>
         </div>
 
-        <div class="form-group">
-          <label class="form-label" for="report-urgency">Tingkat Kondisi Jalur</label>
-          <select id="report-urgency" class="form-input">
-            <option value="safe">Aman — Kondisi Jalur Lancar</option>
-            <option value="warn" selected>Waspada — Licin / Angin / Waspada Cuaca</option>
-            <option value="danger">Bahaya — Jalur Rusak / Tertutup Banjir</option>
-          </select>
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label" for="report-content-input">Pengalaman &amp; Kondisi Jalur Terkini</label>
+          <textarea id="report-content-input" class="form-input" rows="3" placeholder="Contoh: Sangat licin setelah hujan di Pos 2, disarankan pakai trekking pole..." required></textarea>
         </div>
 
-        <div class="form-group">
-          <label class="form-label" for="report-title">Judul Laporan</label>
-          <input type="text" id="report-title" class="form-input" placeholder="Contoh: Kabut tebal di pos 3" required>
+        <div class="form-group" style="margin-bottom: 18px;">
+          <label class="form-label">Tipe Lampiran</label>
+          <div style="display: flex; gap: 12px; margin-top: 6px;">
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #D6E4F5; cursor: pointer;">
+              <input type="radio" name="media-type" value="camera" checked>
+              <span>📸 Foto Jalur</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #D6E4F5; cursor: pointer;">
+              <input type="radio" name="media-type" value="compass">
+              <span>🧭 Kompas / Navigasi</span>
+            </label>
+          </div>
         </div>
 
-        <div class="form-group">
-          <label class="form-label" for="report-content">Deskripsi Rinci</label>
-          <textarea id="report-content" class="form-input" rows="3" placeholder="Sebutkan patokan jalur, kondisi tanah, waktu kejadian, dan saran peralatan..." required></textarea>
-        </div>
-
-        <div style="display: flex; gap: 10px; margin-top: 20px;">
+        <div style="display: flex; gap: 10px;">
           <button type="button" class="btn btn-secondary" id="btn-close-report-modal" style="flex: 1;">Batal</button>
           <button type="submit" class="btn btn-primary" style="flex: 1.5;">Kirim Laporan</button>
         </div>
       </form>
     </div>
-    <div id="add-review-modal" class="modal-sheet" style="display: none;">
+
+    <!-- Modal Detail Panduan Persiapan -->
+    <div id="guide-detail-modal" class="modal-sheet" style="display: none;" role="dialog" aria-modal="true">
       <div class="sheet-handle"></div>
-      <h3 style="font-size: 17px; margin-bottom: 4px;">Tulis Ulasan Perjalanan</h3>
-      <p style="font-size: 12px; color: var(--text-dim); margin-bottom: 16px;">
-        Bagikan tips cuaca, kondisi trek, atau saran logistik untuk wisatawan lain.
-      </p>
-
-      <form id="add-review-form">
-        <div class="form-group">
-          <label class="form-label" for="review-rating">Penilaian Keamanan Jalur</label>
-          <select id="review-rating" class="form-input">
-            <option value="5">⭐⭐⭐⭐⭐ Sangat Puas & Jalur Jelas</option>
-            <option value="4" selected>⭐⭐⭐⭐ Cukup Aman dengan Persiapan</option>
-            <option value="3">⭐⭐⭐ Menantang & Butuh Pendamping</option>
-            <option value="2">⭐⭐ Rawan & Licin</option>
-            <option value="1">⭐ Berbahaya / Tidak Disarankan</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="review-text-input">Pengalaman & Tips Anda</label>
-          <textarea id="review-text-input" class="form-input" rows="3" placeholder="Ceritakan kondisi angin, pakaian yang cocok, atau kontak porter yang bagus..." required></textarea>
-        </div>
-
-        <div style="display: flex; gap: 10px; margin-top: 20px;">
-          <button type="button" class="btn btn-secondary" id="btn-close-review-modal" style="flex: 1;">Batal</button>
-          <button type="submit" class="btn btn-primary" style="flex: 1.5;">Kirim Ulasan</button>
-        </div>
-      </form>
+      <h3 class="sheet-title" id="guide-modal-title">Panduan Persiapan</h3>
+      <div id="guide-modal-body">
+        <!-- Rendered by JS -->
+      </div>
+      <button type="button" class="btn btn-secondary" id="btn-close-guide-modal" style="width: 100%; margin-top: 14px;">
+        Tutup
+      </button>
     </div>
 
     <!-- Bottom Navigation -->
