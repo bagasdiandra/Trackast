@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>TrackCast — Mitra Terverifikasi & Laporan Lapangan</title>
+  <meta name="description" content="Direktori pemandu & porter bersertifikasi resmi serta umpan kondisi lapangan real-time dari posko dan ranger.">
+  <link rel="stylesheet" href="assets/css/global.css">
+  <link rel="stylesheet" href="assets/css/partners.css">
+</head>
+<body>
+  <div class="app-shell">
+
+    <!-- App Bar -->
+    <header class="app-bar">
+      <div class="app-bar-brand">
+        <span class="brand-track">MITRA</span><span class="brand-cast"> LOKAL</span>
+      </div>
+      <div class="app-bar-actions">
+        <a href="index.html" class="icon-btn" aria-label="Kembali ke Beranda">🏠</a>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+      <!-- Action Button for Submitting Report -->
+      <button type="button" class="btn-new-report-fab" id="btn-open-report-modal">
+        <span>✍️</span> Kirim Pembaruan Lapangan
+      </button>
+
+      <!-- Category Filter Tabs -->
+      <div class="partners-tabs" role="tablist">
+        <button type="button" class="tab-btn active" data-tab="semua">Semua Mitra</button>
+        <button type="button" class="tab-btn" data-tab="guide">Pemandu</button>
+        <button type="button" class="tab-btn" data-tab="porter">Porter</button>
+        <button type="button" class="tab-btn" data-tab="laporan">Laporan Lapangan</button>
+      </div>
+
+      <!-- Destination Filter Dropdown -->
+      <div class="form-group">
+        <label for="filter-dest-select" class="form-label">
+          Wilayah Destinasi
+        </label>
+        <select id="filter-dest-select" class="form-input">
+          <option value="semua">Semua Destinasi di Indonesia</option>
+          <option value="rinjani">Gunung Rinjani (Lombok)</option>
+          <option value="pantaipink">Pantai Pink (Lombok Timur)</option>
+          <option value="prambanan">Candi Prambanan (Sleman, DIY)</option>
+          <option value="bromo">Gunung Bromo (Probolinggo)</option>
+          <option value="semeru">Gunung Semeru (Lumajang)</option>
+          <option value="madakaripura">Air Terjun Madakaripura (Probolinggo)</option>
+          <option value="tumpaksewu">Air Terjun Tumpak Sewu (Lumajang)</option>
+          <option value="kuta">Pantai Kuta (Bali)</option>
+          <option value="nusadua">Pantai Nusa Dua (Bali)</option>
+          <option value="komodo">Taman Nasional Komodo (NTT)</option>
+          <option value="borobudur">Candi Borobudur (Magelang)</option>
+          <option value="tobalake">Danau Toba & Samosir (Sumut)</option>
+          <option value="rajaampat">Kepulauan Raja Ampat (Papua)</option>
+        </select>
+      </div>
+
+      <!-- Partners Directory List -->
+      <section id="partners-list-wrap">
+        <div id="partners-container">
+          <!-- Rendered by JS -->
+        </div>
+      </section>
+
+      <!-- Field Reports Feed (Hidden by default, shown on Laporan tab) -->
+      <section id="reports-feed-wrap" style="display: none;">
+        <div id="reports-container">
+          <!-- Rendered by JS -->
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Contact WhatsApp Modal -->
+    <div id="modal-overlay-partners" class="modal-overlay" style="display: none;"></div>
+    <div id="contact-modal" class="modal-sheet" style="display: none;">
+      <div class="sheet-handle"></div>
+      <div style="text-align: center; margin-bottom: 16px;">
+        <div style="font-size: 40px; margin-bottom: 6px;">💬</div>
+        <h3 id="modal-contact-name" style="font-size: 18px; margin-bottom: 2px;">Nama Mitra</h3>
+        <p id="modal-contact-role" style="font-size: 13px; color: var(--primary);">Pemandu Berlisensi APGI</p>
+        <p id="modal-contact-phone" class="mono" style="font-size: 14px; color: var(--text-dim); margin-top: 4px;">+62 812-xxxx-xxxx</p>
+      </div>
+
+      <div style="background: var(--card-2); border-radius: var(--r); padding: 14px; font-size: 12.5px; color: var(--text-dim); line-height: 1.5; margin-bottom: 18px;">
+        Pesan template resmi TrackCast akan disiapkan:
+        <br><em style="color: var(--text);">"Halo, saya wisatawan terdaftar TrackCast. Saya berencana berkunjung dan ingin menanyakan ketersediaan serta kondisi rute terkini."</em>
+      </div>
+
+      <div style="display: flex; gap: 10px;">
+        <button type="button" class="btn btn-secondary" id="btn-close-contact" style="flex: 1;">Batal</button>
+        <button type="button" class="btn btn-primary" id="btn-send-wa" style="flex: 1.5; background: #25D366; border: none;">
+          Buka WhatsApp
+        </button>
+      </div>
+    </div>
+
+    <!-- Upload Field Report Modal -->
+    <div id="new-report-modal" class="modal-sheet" style="display: none;">
+      <div class="sheet-handle"></div>
+      <h3 style="font-size: 17px; margin-bottom: 4px;">Kirim Pembaruan Lapangan</h3>
+      <p style="font-size: 12px; color: var(--text-dim); margin-bottom: 16px;">
+        Informasi Anda membantu ribuan wisatawan lain terhindar dari marabahaya.
+      </p>
+
+      <form id="new-report-form">
+        <div class="form-group">
+          <label class="form-label" for="report-dest">Destinasi Terkait</label>
+          <select id="report-dest" class="form-input" required>
+            <option value="rinjani">Gunung Rinjani (Lombok)</option>
+            <option value="bromo">Gunung Bromo (Jawa Timur)</option>
+            <option value="tumpaksewu">Air Terjun Tumpak Sewu</option>
+            <option value="kuta">Pantai Kuta (Bali)</option>
+            <option value="komodo">TN Komodo & Labuan Bajo (NTT)</option>
+            <option value="borobudur">Candi Borobudur (Magelang)</option>
+            <option value="tobalake">Danau Toba & Samosir (Sumut)</option>
+            <option value="rajaampat">Kepulauan Raja Ampat (Papua)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="report-urgency">Tingkat Kondisi Jalur</label>
+          <select id="report-urgency" class="form-input">
+            <option value="safe">Aman — Kondisi Jalur Lancar</option>
+            <option value="warn" selected>Waspada — Licin / Angin / Waspada Cuaca</option>
+            <option value="danger">Bahaya — Jalur Rusak / Tertutup Banjir</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="report-title">Judul Laporan</label>
+          <input type="text" id="report-title" class="form-input" placeholder="Contoh: Kabut tebal di pos 3" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="report-content">Deskripsi Rinci</label>
+          <textarea id="report-content" class="form-input" rows="3" placeholder="Sebutkan patokan jalur, kondisi tanah, waktu kejadian, dan saran peralatan..." required></textarea>
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+          <button type="button" class="btn btn-secondary" id="btn-close-report-modal" style="flex: 1;">Batal</button>
+          <button type="submit" class="btn btn-primary" style="flex: 1.5;">Kirim Laporan</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav" aria-label="Navigasi Utama">
+      <a href="index.html" class="nav-item">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">Beranda</span>
+      </a>
+      <a href="map.html" class="nav-item">
+        <span class="nav-icon">🗺️</span>
+        <span class="nav-label">Peta</span>
+      </a>
+      <a href="partners.html" class="nav-item active" aria-current="page">
+        <span class="nav-icon">👥</span>
+        <span class="nav-label">Mitra</span>
+      </a>
+      <a href="reports.html" class="nav-item">
+        <span class="nav-icon">📋</span>
+        <span class="nav-label">Laporan</span>
+      </a>
+      <a href="sos.html" class="nav-item nav-item--sos">
+        <span class="nav-icon">🆘</span>
+        <span class="nav-label">SOS</span>
+      </a>
+    </nav>
+
+  </div>
+
+  <script src="assets/js/mock-data.js"></script>
+  <script src="assets/js/partners.js"></script>
+</body>
+</html>

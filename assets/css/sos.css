@@ -1,0 +1,309 @@
+/* ══════════════════════════════════════════════════════════════════
+   SOS.CSS — TrackCast Emergency Dispatch & SOS Activation
+   ══════════════════════════════════════════════════════════════════ */
+
+.sos-page-shell {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  background: radial-gradient(circle at 50% 20%, rgba(248, 113, 113, 0.12) 0%, transparent 60%),
+              var(--bg);
+}
+
+/* SOS Button Hero Section */
+.sos-hero-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 20px 14px 24px;
+}
+
+.sos-trigger-container {
+  position: relative;
+  width: 170px;
+  height: 170px;
+  margin: 16px 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Glowing Pulsing Rings */
+.sos-ring {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.sos-ring.ring-1 {
+  width: 190px;
+  height: 190px;
+  border: 2px solid rgba(248, 113, 113, 0.25);
+  animation: pulseRing 2.4s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.sos-ring.ring-2 {
+  width: 230px;
+  height: 230px;
+  border: 1.5px solid rgba(248, 113, 113, 0.15);
+  animation: pulseRing 2.4s infinite 0.6s cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+@keyframes pulseRing {
+  0% { transform: scale(0.85); opacity: 0.8; }
+  100% { transform: scale(1.2); opacity: 0; }
+}
+
+/* The Big Red SOS Button */
+.btn-sos-trigger {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ff5252 0%, #d32f2f 60%, #9a0007 100%);
+  border: 4px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 12px 35px rgba(248, 113, 113, 0.5), inset 0 2px 6px rgba(255, 255, 255, 0.4);
+  color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-sos-trigger:active {
+  transform: scale(0.94);
+  box-shadow: 0 6px 20px rgba(248, 113, 113, 0.4);
+}
+
+.sos-btn-text {
+  font-family: 'Poppins', sans-serif;
+  font-size: 30px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  line-height: 1;
+}
+
+.sos-btn-sub {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-top: 4px;
+  opacity: 0.9;
+}
+
+@media (max-width: 480px) {
+  .sos-hero-wrap {
+    padding: 16px 12px 20px;
+  }
+  
+  .sos-trigger-container {
+    width: 150px;
+    height: 150px;
+    margin: 14px 0 18px;
+  }
+  
+  .sos-ring.ring-1 {
+    width: 170px;
+    height: 170px;
+  }
+  
+  .sos-ring.ring-2 {
+    width: 200px;
+    height: 200px;
+  }
+  
+  .btn-sos-trigger {
+    width: 120px;
+    height: 120px;
+    border-width: 3px;
+  }
+  
+  .sos-btn-text {
+    font-size: 26px;
+  }
+  
+  .sos-btn-sub {
+    font-size: 8px;
+  }
+}
+
+/* Countdown Modal Overlay */
+.countdown-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 22, 40, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  z-index: 250;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+}
+
+.countdown-box {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 4px solid var(--danger);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  box-shadow: 0 0 40px rgba(248, 113, 113, 0.4);
+}
+
+.countdown-number {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 52px;
+  font-weight: 800;
+  color: var(--danger);
+}
+
+@media (max-width: 480px) {
+  .countdown-box {
+    width: 100px;
+    height: 100px;
+    border-width: 3px;
+    margin-bottom: 16px;
+  }
+  
+  .countdown-number {
+    font-size: 42px;
+  }
+}
+
+.btn-cancel-countdown {
+  width: 100%;
+  max-width: 280px;
+  padding: 16px;
+  background: var(--card-2);
+  border: 2px solid var(--border-2);
+  color: var(--text);
+  border-radius: 50px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-cancel-countdown:hover {
+  background: var(--card-3);
+  border-color: var(--primary);
+}
+
+/* Dispatched State Card */
+.dispatch-status-card {
+  background: rgba(22, 34, 64, 0.7);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 18px;
+  margin-bottom: 20px;
+}
+
+.dispatch-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.dispatch-log-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+
+.log-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.log-status-dot.active { background: var(--safe); box-shadow: 0 0 6px var(--safe); }
+.log-status-dot.pending { background: var(--warn); }
+
+/* Hotlines Directory */
+.hotline-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  transition: border-color 0.2s;
+}
+
+.hotline-card:hover {
+  border-color: var(--border-2);
+}
+
+.hotline-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hotline-icon {
+  font-size: 24px;
+}
+
+.hotline-name {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+
+.hotline-desc {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.btn-call-hotline {
+  padding: 8px 12px;
+  background: rgba(0, 194, 204, 0.12);
+  border: 1px solid rgba(0, 194, 204, 0.3);
+  border-radius: 20px;
+  color: var(--primary);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-call-hotline:hover {
+  background: var(--primary);
+  color: #0A1628;
+}
+
+/* Legal Disclaimer */
+.disclaimer-box {
+  padding: 12px;
+  background: rgba(10, 22, 40, 0.6);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  text-align: center;
+  margin-top: 14px;
+}

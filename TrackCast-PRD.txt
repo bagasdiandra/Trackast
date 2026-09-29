@@ -1,0 +1,79 @@
+TrackCast — Product Requirements Document
+1. Ringkasan produk
+TrackCast adalah aplikasi keselamatan perjalanan wisata di Indonesia yang membantu wisatawan mengambil keputusan sebelum dan selama perjalanan. Aplikasi menggabungkan prakiraan cuaca hyperlocal BMKG, status keselamatan destinasi, laporan kondisi lapangan, layanan mitra lokal terverifikasi, rekomendasi keselamatan, dan tombol SOS dalam satu pengalaman mobile-first.
+
+Masalah yang diselesaikan: informasi wisata sering terlambat, tersebar, dan tidak spesifik terhadap lokasi atau jalur. TrackCast menyajikan satu status operasional yang mudah dipahami: aman, waspada, atau bahaya.
+
+2. Sasaran dan indikator keberhasilan
+Sasaran	Indikator
+Membantu wisatawan merencanakan perjalanan lebih aman	Persentase pengguna yang membuka detail destinasi sebelum perjalanan dan mengikuti rekomendasi keselamatan
+Mempercepat penyebaran informasi kondisi lapangan	Waktu dari laporan mitra dibuat sampai tampil di aplikasi
+Meningkatkan keterhubungan dengan tenaga lokal tepercaya	Rasio kontak/permintaan pemandu atau porter dari halaman mitra
+Mempercepat pertolongan saat darurat	Waktu dari SOS terpicu hingga lokasi dan kontak darurat diterima penerima
+Target awal yang disarankan: status cuaca diperbarui sesuai jadwal sumber, laporan mitra kritis diprioritaskan untuk moderasi, dan pengiriman SOS tercatat end-to-end.
+
+3. Pengguna
+Wisatawan: mencari kondisi terkini, memilih destinasi aman, menyiapkan perlengkapan, membaca laporan, dan meminta bantuan darurat.
+Mitra lapangan: pengelola, ranger, pemandu, atau basecamp yang mengirim pembaruan kondisi setempat.
+Admin/moderator: memverifikasi mitra, memoderasi laporan, mengelola status destinasi, dan memantau peristiwa SOS.
+Penerima darurat: tim SAR, mitra terdekat, serta kontak tepercaya pengguna.
+4. Ruang lingkup produk
+Alur akses dan autentikasi
+Splash screen menjelaskan nilai utama: cuaca hyperlocal, peta digital, dan tanggap darurat.
+Masuk/daftar dengan email dan kata sandi, atau nomor WhatsApp dengan OTP.
+Google SSO sebagai opsi masuk alternatif.
+Persetujuan syarat dan kebijakan privasi pada pendaftaran.
+Dalam prototipe saat ini, autentikasi bersifat simulasi; produksi wajib menggunakan penyedia identitas dan verifikasi OTP yang aman.
+Beranda
+Sapaan personal dan ringkasan cuaca hari ini.
+Kartu prakiraan jam-ke-jam dengan suhu, ikon kondisi, dan probabilitas hujan.
+Akses cepat ke peta, mitra, laporan/rekomendasi, serta SOS.
+Ringkasan status destinasi penting dan pembaruan terakhir.
+Peta keselamatan interaktif
+Peta SVG Indonesia dengan siluet pulau, grid heksagonal hyperlocal, kompas, legenda, dan marker destinasi.
+Tiga status: aman (hijau), waspada (kuning/amber), dan bahaya (merah).
+Pencarian, filter status, serta filter tipe destinasi: gunung, pantai, budaya, air terjun, dan taman nasional.
+Ketuk marker atau kartu untuk membuka detail destinasi.
+Detail memuat cuaca, kelembapan, angin, pembaruan terakhir, catatan operasional, sumber BMKG + mitra, mini-map, serta grafik elevasi/suhu bila tersedia.
+Mitra dan laporan lapangan
+Direktori pemandu dan porter terverifikasi dengan bahasa, rating, destinasi layanan, ketersediaan, sertifikasi, dan tarif harian.
+Tab untuk memisahkan pemandu dan porter.
+Umpan laporan lapangan dengan tingkat urgensi, lokasi, pengirim, waktu, deskripsi, dan bukti foto bila ada.
+Form unggah laporan untuk mitra berwenang: lokasi, judul, deskripsi, status, dan media.
+Produksi: laporan publikasi harus melalui validasi peran, pemeriksaan konten, dan audit trail.
+Laporan dan rekomendasi
+Pemilih destinasi untuk mengubah konteks informasi.
+Ringkasan rekomendasi keselamatan berbasis prakiraan BMKG dan laporan lapangan terbaru.
+Daftar ulasan atau laporan perjalanan wisatawan, termasuk rating, waktu, dan media opsional.
+Pengguna dapat menambahkan laporan perjalanan; produksi memerlukan pelaporan penyalahgunaan dan moderasi.
+SOS darurat
+Tombol SOS besar dengan hitung mundur lima detik dan opsi batal untuk mencegah aktivasi tidak sengaja.
+Setelah terpicu, sistem mengirim lokasi terakhir/terkini, identitas pengguna, waktu, dan konteks destinasi ke daftar penerima.
+Tampilan status pengiriman serta akses ke kontak darurat dan mitra terdekat.
+Produksi: wajib meminta izin lokasi, menggunakan kanal pengiriman yang andal, menangani kegagalan jaringan, serta menampilkan batasan bahwa aplikasi bukan pengganti nomor layanan darurat resmi.
+5. Aturan bisnis utama
+Status bahaya menampilkan peringatan tegas dan harus memprioritaskan informasi penutupan/larangan dari otoritas.
+Status waspada tetap dapat membuka destinasi, tetapi rekomendasi wajib menyebut risiko dan tindakan mitigasi.
+Status destinasi berasal dari agregasi data BMKG, sumber otoritas, dan laporan mitra yang telah diberi bobot kepercayaan; sumber dan waktu pembaruan harus selalu terlihat.
+Hanya akun mitra yang telah diverifikasi yang dapat membuat laporan operasional berlabel mitra.
+SOS tidak boleh dianggap berhasil sebelum backend mengonfirmasi pencatatan dan upaya notifikasi; kondisi "menunggu jaringan" harus dibedakan dari "terkirim".
+Tarif, rating, dan ketersediaan mitra perlu memiliki tanggal pembaruan agar tidak menyesatkan pengguna.
+6. Kebutuhan nonfungsional
+Mobile-first dan aksesibel: target sentuh cukup besar, kontras tinggi, keyboard navigation, teks status tidak hanya dibedakan melalui warna, dan label untuk kontrol ikon.
+Keandalan: tampilkan cache data dan waktu pembaruan jika sumber real-time tidak tersedia.
+Privasi: lokasi presisi hanya diproses dengan persetujuan eksplisit; akses, retensi, dan penerima data SOS harus transparan.
+Keamanan: OTP, token sesi, data kontak darurat, dan bukti laporan disimpan serta ditransmisikan secara aman.
+Observabilitas: audit untuk perubahan status, moderasi laporan, verifikasi mitra, dan siklus hidup SOS.
+Lokalisasi: Bahasa Indonesia sebagai bahasa utama; gunakan zona waktu dan format lokasi Indonesia yang benar.
+7. Batasan MVP dan roadmap
+Sudah direpresentasikan dalam UI: alur autentikasi simulasi, data contoh destinasi, peta SVG/grid, filter, detail dan grafik elevasi, direktori mitra, laporan contoh/form, rekomendasi statis, serta SOS simulasi.
+
+Tahap produksi berikutnya: integrasi BMKG dan geospasial, autentikasi nyata, backend/moderasi laporan, pemesanan atau kontak mitra, rekomendasi berbasis aturan/AI yang dapat dijelaskan, serta dispatch SOS yang terintegrasi dengan prosedur operasional.
+
+Di luar cakupan awal: pengganti sistem komando SAR, jaminan cuaca absolut, pemrosesan pembayaran, dan navigasi turn-by-turn offline.
+
+8. Risiko produk
+Data yang terlambat atau keliru dapat memengaruhi keselamatan; mitigasi dengan sumber, timestamp, confidence, dan jalur eskalasi manual.
+Laporan palsu/spam; mitigasi dengan verifikasi mitra, moderasi, reputasi, dan rate limit.
+Ekspektasi berlebihan terhadap SOS; mitigasi dengan status transparan, fallback komunikasi, dan informasi layanan darurat resmi.
+Kesenjangan konektivitas di area wisata; mitigasi dengan cache lokal dan antrean pengiriman saat jaringan kembali.

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>TrackCast — Peta Keselamatan Interaktif</title>
+  <meta name="description"
+    content="Peta digital status keselamatan destinasi wisata Indonesia dengan grid hyperlocal BMKG.">
+  <link rel="stylesheet" href="assets/css/global.css">
+  <link rel="stylesheet" href="assets/css/map.css">
+</head>
+
+<body>
+  <div class="app-shell map-page-shell">
+
+    <!-- App Bar -->
+    <header class="app-bar">
+      <div class="app-bar-brand">
+        <span class="brand-track">PETA</span><span class="brand-cast"> CUACA</span>
+      </div>
+      <div class="app-bar-actions">
+        <span class="live-indicator"><span class="live-dot"></span> Live</span>
+        <a href="index.html" class="icon-btn" aria-label="Kembali ke Beranda">🏠</a>
+      </div>
+    </header>
+
+    <!-- Map Canvas — takes remaining space above the panel -->
+    <main class="map-canvas-container" id="map-viewport">
+
+      <!-- Zoom Controls -->
+      <div class="map-zoom-controls">
+        <button type="button" class="map-zoom-btn" id="btn-zoom-in" aria-label="Perbesar Peta">+</button>
+        <button type="button" class="map-zoom-btn" id="btn-zoom-out" aria-label="Perkecil Peta">-</button>
+        <button type="button" class="map-zoom-btn" id="btn-zoom-reset" aria-label="Reset Posisi">⟲</button>
+      </div>
+
+      <!-- Map Legend -->
+      <div class="map-legend-bar">
+        <div class="legend-item"><span class="legend-dot safe"></span> Aman</div>
+        <div class="legend-item"><span class="legend-dot warn"></span> Waspada</div>
+        <div class="legend-item"><span class="legend-dot danger"></span> Bahaya</div>
+      </div>
+
+      <!-- SVG Map of Indonesia -->
+      <svg id="indonesia-svg-map" viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Peta Digital Keselamatan Wisata Indonesia">
+        <!-- Ocean Grid Lines for Nautical Atmosphere -->
+        <g stroke="rgba(30, 51, 86, 0.25)" stroke-width="0.5" stroke-dasharray="4,8">
+          <line x1="0" y1="125" x2="1000" y2="125" />
+          <line x1="0" y1="250" x2="1000" y2="250" />
+          <line x1="0" y1="375" x2="1000" y2="375" />
+          <line x1="250" y1="0" x2="250" y2="500" />
+          <line x1="500" y1="0" x2="500" y2="500" />
+          <line x1="750" y1="0" x2="750" y2="500" />
+        </g>
+
+        <!-- Indonesian Islands Silhouettes -->
+        <g id="islands-group">
+          <!-- Sumatera -->
+          <path class="island-path"
+            d="M120,110 L160,100 L210,130 L260,190 L290,260 L280,310 L250,330 L220,310 L170,240 L130,170 Z" />
+          <!-- Jawa -->
+          <path class="island-path" d="M280,330 L350,325 L430,320 L510,335 L520,350 L430,355 L350,350 L275,345 Z" />
+          <!-- Bali & Lombok & Sumbawa & Flores -->
+          <path class="island-path" d="M530,345 L560,345 L555,355 L530,355 Z" />
+          <path class="island-path" d="M570,345 L610,345 L605,355 L570,355 Z" />
+          <path class="island-path" d="M620,342 L670,342 L665,358 L620,355 Z" />
+          <path class="island-path" d="M680,340 L760,340 L755,355 L680,352 Z" />
+          <!-- Kalimantan -->
+          <path class="island-path" d="M380,140 L450,115 L530,130 L550,210 L530,270 L460,285 L390,265 L370,200 Z" />
+          <!-- Sulawesi -->
+          <path class="island-path"
+            d="M570,170 L620,150 L650,170 L620,210 L655,270 L640,295 L600,260 L585,275 L575,230 L595,205 Z" />
+          <!-- Maluku -->
+          <path class="island-path" d="M710,180 L760,170 L750,220 L705,210 Z" />
+          <path class="island-path" d="M720,240 L770,235 L765,270 L715,265 Z" />
+          <!-- Papua -->
+          <path class="island-path" d="M810,180 L870,170 L970,185 L965,310 L910,320 L860,260 L830,240 L810,210 Z" />
+        </g>
+
+        <!-- Hyperlocal Hexagon Grid -->
+        <g id="hex-grid-group"></g>
+
+        <!-- Destination Markers (dots only, no text labels) -->
+        <g id="markers-group"></g>
+      </svg>
+    </main>
+
+    <!-- ═══════════════════════════════════════════════════════
+         DESTINATION PANEL — fixed bottom, slides up/down
+         ═══════════════════════════════════════════════════════ -->
+    <div class="dest-panel" id="dest-panel">
+
+      <!-- Drag Handle + Controls -->
+      <div class="dest-panel-handle" id="dest-panel-handle">
+        <div class="handle-bar"></div>
+
+        <!-- Search -->
+        <div class="panel-search-wrap">
+          <span class="panel-search-icon">🔍</span>
+          <input type="text" id="map-search-input" class="panel-search-input"
+            placeholder="Cari destinasi atau wilayah..." aria-label="Cari destinasi">
+        </div>
+
+        <!-- Status Filter -->
+        <div class="panel-chips-row">
+          <button type="button" class="chip-status active" data-status="semua">Semua</button>
+          <button type="button" class="chip-status chip--safe" data-status="aman">Aman</button>
+          <button type="button" class="chip-status chip--warn" data-status="waspada">Waspada</button>
+          <button type="button" class="chip-status chip--danger" data-status="bahaya">Bahaya</button>
+        </div>
+
+        <!-- Type Filter -->
+        <div class="panel-chips-row">
+          <button type="button" class="chip-type active" data-type="semua">Semua Tipe</button>
+          <button type="button" class="chip-type" data-type="gunung">⛰️ Gunung</button>
+          <button type="button" class="chip-type" data-type="pantai">🏖️ Pantai</button>
+          <button type="button" class="chip-type" data-type="air_terjun">💧 Air Terjun</button>
+          <button type="button" class="chip-type" data-type="taman_nasional">🌿 Taman</button>
+          <button type="button" class="chip-type" data-type="budaya">🏛️ Budaya</button>
+          <button type="button" class="chip-type" data-type="danau">🌊 Danau</button>
+        </div>
+
+        <!-- Result count -->
+        <div class="panel-result-count" id="panel-result-count">0 destinasi ditemukan</div>
+      </div>
+
+      <!-- Scrollable Card List -->
+      <div class="dest-card-list" id="dest-card-list">
+        <!-- Populated by map.js renderDestPanel() -->
+      </div>
+    </div>
+
+    <!-- Modal Overlay & Full Detail Sheet -->
+    <div id="map-modal-overlay" class="modal-overlay" style="display: none;"></div>
+    <div id="dest-detail-sheet" class="dest-detail-sheet"></div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav" aria-label="Navigasi Utama">
+      <a href="index.html" class="nav-item">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">Beranda</span>
+      </a>
+      <a href="map.html" class="nav-item active" aria-current="page">
+        <span class="nav-icon">🗺️</span>
+        <span class="nav-label">Peta</span>
+      </a>
+      <a href="partners.html" class="nav-item">
+        <span class="nav-icon">👥</span>
+        <span class="nav-label">Mitra</span>
+      </a>
+      <a href="reports.html" class="nav-item">
+        <span class="nav-icon">📋</span>
+        <span class="nav-label">Laporan</span>
+      </a>
+      <a href="sos.html" class="nav-item nav-item--sos">
+        <span class="nav-icon">🆘</span>
+        <span class="nav-label">SOS</span>
+      </a>
+    </nav>
+
+  </div>
+
+  <script src="assets/js/mock-data.js"></script>
+  <script src="assets/js/map.js"></script>
+</body>
+
+</html>
