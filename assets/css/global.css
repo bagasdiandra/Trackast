@@ -65,18 +65,22 @@ html {
   font-size: 16px;
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
-}
-html, body {
+  /* scrollbar-gutter: stable reserves scrollbar space on desktop so
+     the layout never shifts when a scrollbar appears or disappears. */
+  scrollbar-gutter: stable;
+  /* Lock html to viewport — body scroll is handled inside .main-content
+     to prevent the width jump that shifts the centered app-shell. */
   height: 100%;
+  overflow: hidden;
+}
+body {
+  height: 100svh;          /* exact viewport — never grows beyond screen */
+  overflow: hidden;        /* body NEVER scrolls; .main-content scrolls internally */
   font-family: 'Inter', sans-serif;
   background: #060D18;
   color: var(--text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-body {
-  min-height: 100svh;
-  overflow-x: hidden;
   background-color: #060D18;
 }
 
@@ -109,7 +113,8 @@ button { cursor: pointer; }
 .app-shell {
   display: flex;
   flex-direction: column;
-  min-height: 100svh;
+  height: 100svh;          /* fixed height — no layout shift across pages */
+  overflow: hidden;        /* clip overflow; .main-content handles internal scroll */
   width: 100%;
   max-width: var(--app-max-width);
   margin: 0 auto;
@@ -128,6 +133,14 @@ button { cursor: pointer; }
     box-shadow: none;
   }
 }
+
+/* ── APP SHELL MODIFIERS ──────────────────────────────────────────
+   Page-specific modifier classes extend .app-shell for special
+   layout needs. Each modifier is defined in its own page CSS file:
+     • .map-page-shell  → map.css   (fullscreen locked viewport)
+     • .sos-page-shell  → sos.css   (danger-tinted radial background)
+   Standard pages (index, reports, partners) use plain .app-shell.
+   ─────────────────────────────────────────────────────────────── */
 
 /* ── APP BAR ───────────────────────────────────────────────────── */
 .app-bar {
@@ -172,6 +185,69 @@ button { cursor: pointer; }
   flex-shrink: 0;
 }
 .icon-btn:hover { background: var(--card-3); border-color: var(--border-2); }
+
+/* ── LOGOUT BUTTON ─────────────────────────────────────────────── */
+/* Keyframe: icon slides right slightly on hover */
+@keyframes logoutSlide {
+  0%   { transform: translateX(0); }
+  40%  { transform: translateX(3px); }
+  70%  { transform: translateX(-1px); }
+  100% { transform: translateX(2px); }
+}
+
+/* Keyframe: subtle idle pulse to draw attention */
+@keyframes logoutPulse {
+  0%, 100% { opacity: 1; filter: brightness(1); }
+  50%       { opacity: 0.82; filter: brightness(1.15); }
+}
+
+.btn-logout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  background: var(--card-2);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+  animation: logoutPulse 3s ease-in-out infinite;
+}
+
+.btn-logout:hover {
+  background: rgba(248, 113, 113, 0.12);
+  border-color: rgba(248, 113, 113, 0.5);
+  box-shadow: 0 0 12px rgba(248, 113, 113, 0.2);
+  animation: none; /* stop idle pulse, show hover style */
+}
+
+.btn-logout:hover .logout-icon {
+  animation: logoutSlide 0.4s ease forwards;
+}
+
+.btn-logout:active {
+  transform: scale(0.92);
+}
+
+.logout-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  display: block;
+  transition: filter 0.2s;
+}
+
+@media (max-width: 480px) {
+  .btn-logout {
+    width: 34px;
+    height: 34px;
+  }
+  .logout-icon {
+    width: 18px;
+    height: 18px;
+  }
+}
 
 /* ── MAIN CONTENT ──────────────────────────────────────────────── */
 .main-content {

@@ -2,12 +2,23 @@
    MAP.CSS — TrackCast Interactive Safety Map & Hexagonal Grid
    ══════════════════════════════════════════════════════════════════ */
 
-.map-page-shell {
-  height: 100svh;
-  max-height: 100svh;
+/* ── PAGE SHELL MODIFIER ─────────────────────────────────────────
+   .map-page-shell extends .app-shell (global.css) for the fullscreen
+   map canvas. height/overflow/flex are already set on .app-shell.
+   Only the .main-content override is unique to this page — it cancels
+   the global padding + overflow-y so the SVG canvas fills the flex
+   column without creating a double-scroll axis.
+   ─────────────────────────────────────────────────────────────── */
+
+/* ── MAIN CONTENT OVERRIDE ───────────────────────────────────────
+   map.html shares class="main-content map-canvas-container" with
+   every other page for structural consistency. Here we cancel the
+   global .main-content padding + overflow-y so the map canvas fills
+   the flex column without creating a double-scroll.
+   ─────────────────────────────────────────────────────────────── */
+.map-page-shell .main-content {
+  padding: 0;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
 }
 
 /* Live Indicator in App Bar */

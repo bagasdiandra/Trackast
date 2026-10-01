@@ -628,3 +628,170 @@
   color: #FFFFFF;
   margin-bottom: 12px;
 }
+
+/* ── FIELD REPORT NEW FORM STYLES ── */
+.status-toggle-group {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.status-toggle-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 11px 8px;
+  border-radius: var(--r-sm, 10px);
+  background: var(--card-2, #10243E);
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  user-select: none;
+  font-size: 13px;
+  font-weight: 600;
+  position: relative;
+}
+
+.status-toggle-card input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.status-toggle-icon {
+  font-size: 14px;
+  line-height: 1;
+}
+
+/* Safe (Aman) */
+.status-toggle-card.safe {
+  color: #10B981;
+}
+.status-toggle-card.safe:hover {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.35);
+}
+.status-toggle-card.safe.is-active,
+.status-toggle-card.safe:has(input:checked) {
+  background: rgba(16, 185, 129, 0.18);
+  border-color: #10B981;
+  color: #34D399;
+  box-shadow: 0 0 14px rgba(16, 185, 129, 0.25);
+}
+
+/* Warn (Waspada) */
+.status-toggle-card.warn {
+  color: #F59E0B;
+}
+.status-toggle-card.warn:hover {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.35);
+}
+.status-toggle-card.warn.is-active,
+.status-toggle-card.warn:has(input:checked) {
+  background: rgba(245, 158, 11, 0.18);
+  border-color: #F59E0B;
+  color: #FBBF24;
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.25);
+}
+
+/* Danger (Bahaya) */
+.status-toggle-card.danger {
+  color: #EF4444;
+}
+.status-toggle-card.danger:hover {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.35);
+}
+.status-toggle-card.danger.is-active,
+.status-toggle-card.danger:has(input:checked) {
+  background: rgba(239, 68, 68, 0.18);
+  border-color: #EF4444;
+  color: #F87171;
+  box-shadow: 0 0 14px rgba(239, 68, 68, 0.25);
+}
+
+/* ── PHOTO UPLOAD ZONE ── */
+.photo-upload-zone {
+  border: 1.5px dashed rgba(0, 194, 204, 0.35);
+  border-radius: var(--r-md, 14px);
+  background: rgba(16, 36, 62, 0.5);
+  padding: 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.photo-upload-zone:hover {
+  border-color: #00C2CC;
+  background: rgba(0, 194, 204, 0.06);
+}
+
+.photo-upload-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.photo-camera-icon {
+  font-size: 26px;
+  margin-bottom: 2px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.photo-upload-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.photo-upload-sub {
+  font-size: 11px;
+  color: var(--text-muted, #6E8FA9);
+}
+
+.photo-preview-wrap {
+  position: relative;
+  width: 100%;
+  max-height: 180px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.photo-preview-wrap img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+}
+
+.btn-remove-photo {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.75);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.btn-remove-photo:hover {
+  background: #EF4444;
+  transform: scale(1.1);
+}
+

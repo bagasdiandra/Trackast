@@ -14,10 +14,12 @@
     <!-- App Bar -->
     <header class="app-bar">
       <div class="app-bar-brand">
-        <span class="brand-track">MITRA</span><span class="brand-cast"> LOKAL</span>
+        <span class="brand-track">TRACK</span><span class="brand-cast">CAST</span>
       </div>
       <div class="app-bar-actions">
-        <a href="index.html" class="icon-btn" aria-label="Kembali ke Beranda">🏠</a>
+        <a href="auth.html" class="btn-logout" id="btn-logout" aria-label="Keluar">
+          <img src="assets/images/logout.png" alt="Logout" class="logout-icon">
+        </a>
       </div>
     </header>
 
@@ -110,43 +112,61 @@
     <!-- Upload Field Report Modal -->
     <div id="new-report-modal" class="modal-sheet" style="display: none;">
       <div class="sheet-handle"></div>
-      <h3 style="font-size: 17px; margin-bottom: 4px;">Kirim Pembaruan Lapangan</h3>
+      <h3 style="font-size: 17px; margin-bottom: 4px; font-family: 'Poppins', sans-serif; font-weight: 700; color: #FFFFFF;">Unggah Status Lapangan</h3>
       <p style="font-size: 12px; color: var(--text-dim); margin-bottom: 16px;">
         Informasi Anda membantu ribuan wisatawan lain terhindar dari marabahaya.
       </p>
 
       <form id="new-report-form">
         <div class="form-group">
-          <label class="form-label" for="report-dest">Destinasi Terkait</label>
-          <select id="report-dest" class="form-input" required>
-            <option value="rinjani">Gunung Rinjani (Lombok)</option>
-            <option value="bromo">Gunung Bromo (Jawa Timur)</option>
-            <option value="tumpaksewu">Air Terjun Tumpak Sewu</option>
-            <option value="kuta">Pantai Kuta (Bali)</option>
-            <option value="komodo">TN Komodo & Labuan Bajo (NTT)</option>
-            <option value="borobudur">Candi Borobudur (Magelang)</option>
-            <option value="tobalake">Danau Toba & Samosir (Sumut)</option>
-            <option value="rajaampat">Kepulauan Raja Ampat (Papua)</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="report-urgency">Tingkat Kondisi Jalur</label>
-          <select id="report-urgency" class="form-input">
-            <option value="safe">Aman — Kondisi Jalur Lancar</option>
-            <option value="warn" selected>Waspada — Licin / Angin / Waspada Cuaca</option>
-            <option value="danger">Bahaya — Jalur Rusak / Tertutup Banjir</option>
-          </select>
+          <label class="form-label" for="report-dest">Lokasi Destinasi</label>
+          <input type="text" id="report-dest" class="form-input" placeholder="Nama lokasi / pos" required>
         </div>
 
         <div class="form-group">
           <label class="form-label" for="report-title">Judul Laporan</label>
-          <input type="text" id="report-title" class="form-input" placeholder="Contoh: Kabut tebal di pos 3" required>
+          <input type="text" id="report-title" class="form-input" placeholder="Kondisi singkat di lapangan" required>
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="report-content">Deskripsi Rinci</label>
-          <textarea id="report-content" class="form-input" rows="3" placeholder="Sebutkan patokan jalur, kondisi tanah, waktu kejadian, dan saran peralatan..." required></textarea>
+          <label class="form-label" for="report-content">Deskripsi</label>
+          <textarea id="report-content" class="form-input" rows="3" placeholder="Detail kondisi lapangan..." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Status Kondisi</label>
+          <div class="status-toggle-group">
+            <label class="status-toggle-card safe">
+              <input type="radio" name="report-urgency" value="safe" required>
+              <span class="status-toggle-icon">✓</span>
+              <span class="status-toggle-label">Aman</span>
+            </label>
+            <label class="status-toggle-card warn">
+              <input type="radio" name="report-urgency" value="warn" checked required>
+              <span class="status-toggle-icon">⚠</span>
+              <span class="status-toggle-label">Waspada</span>
+            </label>
+            <label class="status-toggle-card danger">
+              <input type="radio" name="report-urgency" value="danger" required>
+              <span class="status-toggle-icon">✖</span>
+              <span class="status-toggle-label">Bahaya</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="photo-upload-zone" id="photo-upload-zone" role="button" tabindex="0">
+            <input type="file" id="report-photo" accept="image/*" style="display: none;">
+            <div class="photo-upload-content" id="photo-upload-placeholder">
+              <span class="photo-camera-icon">📷</span>
+              <span class="photo-upload-title">Tambah Foto</span>
+              <span class="photo-upload-sub">Opsional · Maks 5 MB</span>
+            </div>
+            <div class="photo-preview-wrap" id="photo-preview-wrap" style="display: none;">
+              <img id="photo-preview-img" src="" alt="Preview Foto">
+              <button type="button" class="btn-remove-photo" id="btn-remove-photo" title="Hapus Foto">✕</button>
+            </div>
+          </div>
         </div>
 
         <div style="display: flex; gap: 10px; margin-top: 20px;">

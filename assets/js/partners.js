@@ -155,9 +155,12 @@ document.addEventListener("DOMContentLoaded", () => {
             ? '<span class="badge badge--warn">' + r.urgencyLabel + '</span>'
             : '<span class="badge badge--safe">' + r.urgencyLabel + '</span>');
       var avatarIcon = r.verifiedReport ? "\uD83D\uDEE1\uFE0F" : "\uD83D\uDC64";
-      var imageHtml = r.hasImage
-        ? '<div class="report-image-mock"><span>\uD83D\uDCF7 ' + r.imagePlaceholder + '</span></div>'
-        : "";
+      var imageHtml = "";
+      if (r.photoSrc) {
+        imageHtml = '<div style="margin-top:10px;border-radius:8px;overflow:hidden;"><img src="' + r.photoSrc + '" alt="Foto Lapangan" style="width:100%;max-height:220px;object-fit:cover;border-radius:8px;display:block;"></div>';
+      } else if (r.hasImage) {
+        imageHtml = '<div class="report-image-mock"><span>\uD83D\uDCF7 ' + r.imagePlaceholder + '</span></div>';
+      }
 
       return [
         '<div class="report-feed-card">',
@@ -377,11 +380,19 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // ── Field Report Submit ────────────────────────────────────────
-  var reportForm  = document.getElementById("new-report-form");
-  var reportModal = document.getElementById("new-report-modal");
+  // ── Field Report Form Interactions ────────────────────────────
+  var reportForm       = document.getElementById("new-report-form");
+  var reportModal      = document.getElementById("new-report-modal");
+  var btnOpenReport    = document.getElementById("btn-open-report-modal");
+  var btnCloseReport   = document.getElementById("btn-close-report-modal");
+  var photoZone        = document.getElementById("photo-upload-zone");
+  var photoInput       = document.getElementById("report-photo");
+  var photoPreview     = document.getElementById("photo-preview-wrap");
+  var photoImg         = document.getElementById("photo-preview-img");
+  var photoPlaceholder = document.getElementById("photo-upload-placeholder");
+  var btnRemovePhoto   = document.getElementById("btn-remove-photo");
+  var radioCards       = document.querySelectorAll(".status-toggle-card");
 
-  var btnOpenReport = document.getElementById("btn-open-report-modal");
   if (btnOpenReport) {
     btnOpenReport.addEventListener("click", function() {
       if (reportModal) reportModal.style.display = "block";
@@ -389,40 +400,118 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  var btnCloseReport = document.getElementById("btn-close-report-modal");
-  if (btnCloseReport) btnCloseReport.addEventListener("click", closeAllModals);
+  if (btnCloseReport) {
+    btnCloseReport.addEventListener("click", closeAllModals);
+  }
 
+  // Radio button active styling sync
+  function syncStatusRadios() {
+    radioCards.forEach(function(card) {
+      var radio = card.querySelector("input[type='radio']");
+      if (radio && radio.checked) {
+        card.classList.add("is-active");
+      } else {
+        card.classList.remove("is-active");
+      }
+    });
+  }
+
+  radioCards.forEach(function(card) {
+    var radio = card.querySelector("input[type='radio']");
+    if (radio) {
+      radio.addEventListener("change", syncStatusRadios);
+    }
+  });
+  syncStatusRadios();
+
+  // Photo upload click & preview
+  if (photoZone && photoInput) {
+    photoZone.addEventListener("click", function(e) {
+      if (e.target.closest("#btn-remove-photo")) return;
+      photoInput.click();
+    });
+
+    photoInput.addEventListener("change", function() {
+      var file = photoInput.files && photoInput.files[0];
+      if (file) {
+        if (file.size > 5 * 1024 * 1024) {
+          alert("Ukuran file melebihi 5 MB. Silakan pilih foto lain yang lebih kecil.");
+          photoInput.value = "";
+          return;
+        }
+        var reader = new FileReader();
+        reader.onload = function(evt) {
+          if (photoImg && photoPreview && photoPlaceholder) {
+            photoImg.src = evt.target.result;
+            photoPreview.style.display = "block";
+            photoPlaceholder.style.display = "none";
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    if (btnRemovePhoto) {
+      btnRemovePhoto.addEventListener("click", function(e) {
+        e.stopPropagation();
+        photoInput.value = "";
+        if (photoImg) photoImg.src = "";
+        if (photoPreview) photoPreview.style.display = "none";
+        if (photoPlaceholder) photoPlaceholder.style.display = "flex";
+      });
+    }
+  }
+
+  // Submit Handler
   if (reportForm) {
     reportForm.addEventListener("submit", function(e) {
       e.preventDefault();
-      var destId      = document.getElementById("report-dest").value;
-      var targetDest  = data.destinations ? data.destinations.find(function(d) { return d.id === destId; }) : null;
-      var urgencyVal  = document.getElementById("report-urgency").value;
-      var titleVal    = document.getElementById("report-title").value;
-      var contentVal  = document.getElementById("report-content").value;
+      var locationVal = document.getElementById("report-dest") ? document.getElementById("report-dest").value.trim() : "";
+      var urgencyEl   = document.querySelector("input[name='report-urgency']:checked");
+      var urgencyVal  = urgencyEl ? urgencyEl.value : "warn";
+      var titleVal    = document.getElementById("report-title") ? document.getElementById("report-title").value.trim() : "";
+      var contentVal  = document.getElementById("report-content") ? document.getElementById("report-content").value.trim() : "";
+      var hasCustomPhoto = photoImg && photoImg.src && photoImg.src.startsWith("data:image");
+
+      var urgencyBadgeLabel = urgencyVal === "danger" 
+        ? "DITUTUP SEMENTARA" 
+        : (urgencyVal === "warn" ? "PERHATIAN JALUR" : "KONDISI AMAN");
 
       data.fieldReports.unshift({
         id:              "rep_" + Date.now(),
-        destinationId:   destId,
-        destinationName: targetDest ? targetDest.name : "Destinasi",
+        destinationId:   selectedDest !== "semua" ? selectedDest : "rinjani",
+        destinationName: locationVal || "Lokasi Lapangan",
         urgency:         urgencyVal,
-        urgencyLabel:    urgencyVal === "danger" ? "DITUTUP SEMENTARA" : (urgencyVal === "warn" ? "PERHATIAN JALUR" : "KONDISI AMAN"),
+        urgencyLabel:    urgencyBadgeLabel,
         authorName:      "Arya Pratama (Anda)",
         authorRole:      "Laporan Terverifikasi",
         time:            "Baru saja",
         title:           titleVal,
         content:         contentVal,
-        hasImage:        true,
-        imagePlaceholder: "\uD83D\uDCF7 Bukti Foto Terunggah",
+        hasImage:        Boolean(hasCustomPhoto),
+        imagePlaceholder: hasCustomPhoto ? "📷 Foto Lapangan Terlampir" : "",
+        photoSrc:        hasCustomPhoto ? photoImg.src : null,
         likes:           1,
         verifiedReport:  true
       });
 
       reportForm.reset();
+      if (btnRemovePhoto) {
+        photoInput.value = "";
+        if (photoImg) photoImg.src = "";
+        if (photoPreview) photoPreview.style.display = "none";
+        if (photoPlaceholder) photoPlaceholder.style.display = "flex";
+      }
+      syncStatusRadios();
       closeAllModals();
+
       var laporanTab = document.querySelector(".tab-btn[data-tab='laporan']");
-      if (laporanTab) laporanTab.click();
-      alert("\u2705 Laporan kondisi lapangan Anda berhasil dikirim dan diverifikasi!");
+      if (laporanTab) {
+        laporanTab.click();
+      } else {
+        renderFieldReports();
+      }
+      alert("\u2705 Laporan status lapangan Anda berhasil diunggah!");
     });
   }
 
