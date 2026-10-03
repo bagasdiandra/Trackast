@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>TrackCast — Beranda Keselamatan & Cuaca</title>
+  <meta name="description"
+    content="Pantau cuaca hyperlocal BMKG dan status keselamatan destinasi wisata secara real-time.">
+  <link rel="stylesheet" href="assets/css/global.css">
+  <link rel="stylesheet" href="assets/css/home.css">
+</head>
+
+<body>
+  <div class="app-shell">
+
+    <!-- App Bar -->
+    <header class="app-bar">
+      <div class="app-bar-brand">
+        <span class="brand-track">TRACK</span><span class="brand-cast">CAST</span>
+      </div>
+      <div class="app-bar-actions">
+        <a href="auth.html" class="btn-logout" id="btn-logout" aria-label="Keluar">
+          <img src="assets/images/logout.png" alt="Logout" class="logout-icon">
+        </a>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+      <!-- Greeting Header -->
+      <section style="margin-bottom: 16px;">
+        <h1 id="user-greeting" style="font-size: 20px; font-weight: 700; margin-bottom: 4px;">Halo, Arya Pratama 👋</h1>
+        <p style="font-size: 13px; color: var(--text-dim);">Pantau kondisi perjalanan sebelum beraktivitas di alam
+          terbuka.</p>
+      </section>
+
+      <!-- Weather Hero Card -->
+      <section class="weather-hero-card">
+        <div class="weather-header">
+          <div>
+            <div class="location-tag">
+              <span>📍</span>
+              <span id="weather-location">Memuat lokasi...</span>
+            </div>
+            <div class="location-sub" id="weather-region">Lombok Utara, NTB</div>
+          </div>
+          <span class="source-badge">BMKG Hyperlocal</span>
+        </div>
+
+        <div class="weather-main-row">
+          <div>
+            <div class="temp-large">
+              <span id="weather-temp">--</span><span class="temp-unit">°C</span>
+            </div>
+            <div class="weather-condition-text" id="weather-condition">Memuat...</div>
+            <div class="weather-range" id="weather-range">Tertinggi --° · Terendah --°</div>
+          </div>
+          <div class="weather-icon-lg" id="weather-icon">🌧️</div>
+        </div>
+
+        <div class="weather-metrics-grid">
+          <div class="metric-item">
+            <span class="metric-label">Kelembapan</span>
+            <span class="metric-value" id="weather-humidity">--%</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">Kecepatan Angin</span>
+            <span class="metric-value" id="weather-wind">-- km/j</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-label">Peluang Hujan</span>
+            <span class="metric-value" id="weather-rain" style="color: var(--primary);">--%</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 10px; font-size: 11px; color: var(--text-muted); text-align: right;"
+          id="weather-updated">
+          Pembaruan BMKG
+        </div>
+      </section>
+
+      <!-- Hourly Forecast -->
+      <section>
+        <div class="section-header">
+          <h2 class="section-title">Prakiraan Tiap Jam</h2>
+          <span style="font-size: 11.5px; color: var(--text-dim);">Hari Ini</span>
+        </div>
+        <div class="forecast-scroll-wrap" id="hourly-forecast-list">
+          <!-- Filled dynamically by JS -->
+        </div>
+      </section>
+
+      <!-- Quick Action Shortcuts -->
+      <section>
+        <div class="quick-action-grid">
+          <a href="map.html" class="quick-action-item">
+            <div class="quick-icon-box">🗺️</div>
+            <span class="quick-label">Peta Digital</span>
+          </a>
+          <a href="partners.html" class="quick-action-item">
+            <div class="quick-icon-box">👥</div>
+            <span class="quick-label">Mitra Lokal</span>
+          </a>
+          <a href="reports.html" class="quick-action-item">
+            <div class="quick-icon-box">📋</div>
+            <span class="quick-label">Rekomendasi</span>
+          </a>
+          <a href="sos.html" class="quick-action-item sos">
+            <div class="quick-icon-box">SOS</div>
+            <span class="quick-label" style="color: var(--danger);">Bantuan SOS</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- Alert Feed Banner -->
+      <section id="home-alert-feed">
+        <!-- Rendered by JS -->
+      </section>
+
+      <!-- Destinasi & Status Keselamatan -->
+      <section>
+        <div class="section-header">
+          <h2 class="section-title">Status Destinasi Populer</h2>
+          <a href="map.html" class="section-link">Buka Peta &rarr;</a>
+        </div>
+
+        <!-- Filter Chips -->
+        <div class="chip-row" style="margin-bottom: 14px;">
+          <button type="button" class="chip active" data-category="semua">Semua</button>
+          <button type="button" class="chip" data-category="gunung">Gunung</button>
+          <button type="button" class="chip" data-category="pantai">Pantai</button>
+          <button type="button" class="chip" data-category="air_terjun">Air Terjun</button>
+          <button type="button" class="chip" data-category="taman_nasional">Taman Nasional</button>
+          <button type="button" class="chip" data-category="budaya">Budaya</button>
+        </div>
+
+        <!-- List Cards -->
+        <div class="destination-list" id="destination-list">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Quick Destination Modal -->
+    <div id="modal-overlay" class="modal-overlay" style="display: none;"></div>
+    <div id="quick-dest-modal" class="modal-sheet" style="display: none;">
+      <div class="sheet-handle"></div>
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+        <div>
+          <h3 id="modal-dest-name" style="font-size: 18px; margin-bottom: 2px;">Nama Destinasi</h3>
+          <p id="modal-dest-region" style="font-size: 12.5px; color: var(--text-dim);">Wilayah</p>
+        </div>
+        <div id="modal-badge-container"></div>
+      </div>
+
+      <div
+        style="background: var(--card-2); border-radius: var(--r); padding: 12px; margin-bottom: 14px; font-size: 13px;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+          <span style="color: var(--text-dim);">Kondisi Cuaca:</span>
+          <span id="modal-dest-weather" style="font-weight: 600;">--</span>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <span style="color: var(--text-dim);">Angin & Udara:</span>
+          <span id="modal-dest-wind" style="font-weight: 600;">--</span>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 14px;">
+        <div style="font-size: 12.5px; font-weight: 700; color: var(--text); margin-bottom: 4px;">Peringatan
+          Operasional:</div>
+        <div id="modal-dest-headline"
+          style="font-size: 13px; color: var(--primary); font-weight: 600; margin-bottom: 6px;">--</div>
+        <p id="modal-dest-notes" style="font-size: 12.5px; color: var(--text-dim); line-height: 1.5;">--</p>
+      </div>
+
+      <div id="modal-dest-source" style="font-size: 11px; color: var(--text-muted); margin-bottom: 18px;">
+        Sumber: BMKG + Mitra
+      </div>
+
+      <div style="display: flex; gap: 10px;">
+        <button type="button" class="btn btn-secondary" id="modal-close-btn" style="flex: 1;">Tutup</button>
+        <a href="map.html" class="btn btn-primary" id="modal-go-map" style="flex: 1; text-align: center;">Lihat di
+          Peta</a>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav" aria-label="Navigasi Utama">
+      <a href="homepage.html" class="nav-item active" aria-current="page">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">Beranda</span>
+      </a>
+      <a href="map.html" class="nav-item">
+        <span class="nav-icon">🗺️</span>
+        <span class="nav-label">Peta</span>
+      </a>
+      <a href="partners.html" class="nav-item">
+        <span class="nav-icon">👥</span>
+        <span class="nav-label">Mitra</span>
+      </a>
+      <a href="reports.html" class="nav-item">
+        <span class="nav-icon">📋</span>
+        <span class="nav-label">Laporan</span>
+      </a>
+      <a href="sos.html" class="nav-item nav-item--sos">
+        <span class="nav-icon">🆘</span>
+        <span class="nav-label">SOS</span>
+      </a>
+    </nav>
+
+  </div>
+
+  <script src="assets/js/mock-data.js"></script>
+  <script src="assets/js/home.js"></script>
+</body>
+
+</html>
