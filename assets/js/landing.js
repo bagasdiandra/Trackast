@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (window.TrackCastStorage && window.TrackCastStorage.isLoggedIn()) {
     if (btnStart) {
       btnStart.textContent = "Buka Beranda";
-      btnStart.href = "index.html";
+      btnStart.href = "homepage.html";
     }
   }
 

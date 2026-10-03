@@ -49,9 +49,9 @@ TrackCast adalah aplikasi mobile-first keselamatan wisata yang menggabungkan dat
 **Stack Frontend (MVP Prototipe):**
 ```
 Trackast/
-├── landing.html            # Splash/landing page — nilai utama & CTA "Mulai Sekarang"
+├── index.html              # Splash/landing page — nilai utama & CTA "Mulai Sekarang"
 ├── auth.html               # Halaman login, register, lupa sandi
-├── index.html              # Beranda (post-login) — cuaca & ringkasan status
+├── homepage.html           # Beranda (post-login) — cuaca & ringkasan status
 ├── map.html                # Peta keselamatan interaktif
 ├── partners.html           # Direktori mitra & laporan lapangan
 ├── reports.html            # Rekomendasi & ulasan wisatawan
@@ -88,7 +88,7 @@ Trackast/
 
 **Alur navigasi halaman:**
 ```
-landing.html  →  auth.html  →  index.html (beranda)
+index.html (landing)  →  auth.html  →  homepage.html (beranda)
                                    ↕ (bottom navigation)
                               map.html · partners.html · reports.html · sos.html
 ```

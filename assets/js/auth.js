@@ -210,7 +210,7 @@ document.addEventListener("DOMContentLoaded", () => {
           window.TrackCastStorage.setLoggedIn(true, userObj);
         }
 
-        window.location.href = "index.html";
+        window.location.href = "homepage.html";
       }, 700);
     });
   }
@@ -229,7 +229,7 @@ document.addEventListener("DOMContentLoaded", () => {
             role: "wisatawan"
           });
         }
-        window.location.href = "index.html";
+        window.location.href = "homepage.html";
       }, 600);
     });
   }
