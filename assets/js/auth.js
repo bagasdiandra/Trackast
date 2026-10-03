@@ -121,7 +121,13 @@ document.addEventListener("DOMContentLoaded", () => {
       if (pwdInput) pwdInput.placeholder = "Masukkan kata sandi";
 
       registerFields.forEach(el => el.style.display = "none");
-      loginOnlyFields.forEach(el => el.style.display = "block");
+      loginOnlyFields.forEach(el => {
+        if (el.classList.contains("auth-divider") || el.classList.contains("btn-google") || el.classList.contains("forgot-wrap")) {
+          el.style.display = "flex";
+        } else {
+          el.style.display = "block";
+        }
+      });
       if (forgotWrap) forgotWrap.style.display = "flex";
     }
 
