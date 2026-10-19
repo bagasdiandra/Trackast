@@ -146,7 +146,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Submit Handler
   if (authForm) {
-    authForm.addEventListener("submit", (e) => {
+    authForm.addEventListener("submit", async (e) => {
       e.preventDefault();
 
       const nameVal = document.getElementById("input-name")?.value.trim() || "";
@@ -193,29 +193,54 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
 
-      // Simulate Auth Success
+      // ─── Panggil Backend API ────────────────────────────────────────────
       submitBtn.disabled = true;
       submitBtn.textContent = currentMode === "register" ? "Membuat Akun..." : "Memverifikasi...";
 
-      setTimeout(() => {
-        const userObj = {
-          id: "usr_" + Date.now().toString().slice(-4),
-          name: nameVal || (usernameVal ? `@${usernameVal}` : "Arya Pratama"),
-          email: currentMethod === "email" ? (emailVal || "arya.pratama@gmail.com") : `${usernameVal || 'user'}@trackcast.id`,
-          username: usernameVal || (emailVal ? emailVal.split("@")[0] : "pengguna"),
-          role: selectedRole
-        };
+      const api = window.TrackCastAPI;
+      const backendOnline = api ? await api.utils.checkHealth() : false;
 
-        if (window.TrackCastStorage) {
-          window.TrackCastStorage.setLoggedIn(true, userObj);
+      try {
+        if (!backendOnline) {
+          // Fallback simulasi jika backend tidak aktif
+          console.warn("[TrackCast] Backend tidak aktif — mode simulasi aktif.");
+          const userObj = {
+            id: "usr_" + Date.now().toString().slice(-4),
+            name: nameVal || (usernameVal ? `@${usernameVal}` : "Arya Pratama"),
+            email: currentMethod === "email" ? (emailVal || "demo@trackcast.id") : `${usernameVal || "user"}@trackcast.id`,
+            username: usernameVal || (emailVal ? emailVal.split("@")[0] : "pengguna"),
+            role: selectedRole || "wisatawan"
+          };
+          if (window.TrackCastStorage) window.TrackCastStorage.setLoggedIn(true, userObj);
+          window.location.href = "homepage.html";
+          return;
+        }
+
+        if (currentMode === "register") {
+          await api.auth.register({
+            full_name: nameVal,
+            email: currentMethod === "email" ? emailVal : null,
+            username: currentMethod === "username" ? usernameVal : null,
+            password: pwdVal,
+            role: selectedRole || "wisatawan"
+          });
+        } else {
+          const identifier = currentMethod === "email" ? emailVal : usernameVal;
+          await api.auth.login({ identifier, password: pwdVal });
         }
 
         window.location.href = "homepage.html";
-      }, 700);
+
+      } catch (err) {
+        console.error("[TrackCast Auth Error]", err);
+        alert(`\u274C ${err.message}`);
+        submitBtn.disabled = false;
+        submitBtn.textContent = currentMode === "register" ? "Buat Akun" : "Masuk";
+      }
     });
   }
 
-  // Google Login Simulation
+  // Google Login (Simulasi — integrasi OAuth penuh di Tahap 2)
   if (googleBtn) {
     googleBtn.addEventListener("click", () => {
       googleBtn.disabled = true;
